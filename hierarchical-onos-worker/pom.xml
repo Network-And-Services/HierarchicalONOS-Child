@@ -23,7 +23,7 @@
     </parent>
 
     <groupId>org.sssup</groupId>
-    <artifactId>hierarchical-onos-worker</artifactId>
+    <artifactId>hierarchicalonosworker</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
@@ -117,7 +117,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Karaf-Commands>org.sssup.hierarchical-onos-worker</Karaf-Commands>
+            <Karaf-Commands>org.sssup.hierarchicalonosworker</Karaf-Commands>
           </instructions>
         </configuration>
       </plugin>

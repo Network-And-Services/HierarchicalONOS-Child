@@ -17,4 +17,4 @@
 /**
  * ONOS application archetype.
  */
-package org.sssup.multiinstance;
+package org.sssup.hierarchicalonosworker;

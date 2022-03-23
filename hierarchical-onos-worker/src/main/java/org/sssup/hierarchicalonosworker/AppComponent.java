@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.sssup.multiinstance;
+package org.sssup.hierarchicalonosworker;
 
 import org.onosproject.cfg.ComponentConfigService;
 import org.onosproject.event.Event;
@@ -21,7 +21,6 @@ import org.onosproject.mastership.MastershipInfo;
 import org.onosproject.mastership.MastershipService;
 import org.onosproject.net.*;
 import org.onosproject.net.device.DeviceEvent;
-import org.onosproject.net.device.DeviceListener;
 import org.onosproject.net.device.DeviceService;
 import org.onosproject.net.link.LinkEvent;
 import org.onosproject.net.topology.TopologyEvent;
