@@ -22,8 +22,8 @@
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.sssup</groupId>
-    <artifactId>hierarchicalonosworker</artifactId>
+    <groupId>org.sssa</groupId>
+    <artifactId>hierarchicalsyncworker</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 

@@ -12,41 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-
-
-
-package org.sssup.multiinstance;
-
-
-import org.junit.After;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.onosproject.cfg.ComponentConfigAdapter;
+ */
 
 /**
- * Set of tests of the ONOS application component.
-
-public class AppComponentTest {
-
-    private AppComponent component;
-
-    @Before
-    public void setUp() {
-        component = new AppComponent();
-        //component.cfgService = new ComponentConfigAdapter();
-        component.activate();
-    }
-
-    @After
-    public void tearDown() {
-        //component.deactivate();
-    }
-
-    @Test
-    public void basics() {
-
-    }
-
-}
+ * ONOS application archetype.
  */
+package org.sssa.hierarchicalsyncworker;
