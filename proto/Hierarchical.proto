@@ -1,0 +1,14 @@
+syntax = "proto3";
+option java_package = "org.onosproject.hierarchicalsyncworker.proto";
+
+service HierarchicalService {
+  rpc SayHello (Request) returns (Response);
+}
+
+message Request {
+  string request = 1;
+}
+
+message Response {
+  string response = 1;
+}
