@@ -22,8 +22,7 @@ import org.onosproject.net.AnnotationKeys;
 import org.onosproject.net.Annotations;
 import org.onosproject.net.Device;
 import org.onosproject.net.device.DeviceService;
-import org.onosproject.uonos.DeviceOuterClass;
-import org.onosproject.uonos.DeviceServiceGrpc;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -34,14 +33,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static org.onosproject.uonos.DeviceOuterClass.ListRequest;
-import static org.onosproject.uonos.DeviceOuterClass.ListResponse;
+
 
 /**
  * Provides implementation of the gRPC interface for onos-topo service.
  */
 @Component(immediate = true)
 public class MicroOnosTopoManager {
+    /*
 
 
     private static final int MICRO_ONOS_PORT = 5150;
@@ -160,5 +159,6 @@ public class MicroOnosTopoManager {
             responseObserver.onCompleted();
         }
     }
+     */
 
 }

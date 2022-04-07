@@ -52,7 +52,7 @@ public class EventConversionManager implements EventConversionService {
         linkEventConverter = new LinkEventConverter();
         hostEventConverter = new HostEventConverter();
 
-        log.info("Started");
+        log.info("My app Started!");
     }
 
     @Deactivate

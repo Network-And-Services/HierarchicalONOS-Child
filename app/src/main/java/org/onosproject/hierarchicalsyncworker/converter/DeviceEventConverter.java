@@ -18,14 +18,21 @@ package org.onosproject.hierarchicalsyncworker.converter;
 import com.google.protobuf.GeneratedMessageV3;
 
 import org.onosproject.event.Event;
+import org.onosproject.grpc.net.device.models.DeviceDescriptionProtoOuterClass;
 import org.onosproject.grpc.net.device.models.DeviceEnumsProto.DeviceEventTypeProto;
 import org.onosproject.grpc.net.device.models.DeviceEnumsProto.DeviceTypeProto;
+import org.onosproject.grpc.net.device.models.DeviceEventProto;
 import org.onosproject.grpc.net.device.models.DeviceEventProto.DeviceNotificationProto;
 import org.onosproject.grpc.net.device.models.PortEnumsProto;
 import org.onosproject.grpc.net.models.DeviceProtoOuterClass.DeviceProto;
 import org.onosproject.grpc.net.models.PortProtoOuterClass;
 import org.onosproject.incubator.protobuf.models.net.AnnotationsTranslator;
+import org.onosproject.incubator.protobuf.models.net.device.DeviceProtoTranslator;
+import org.onosproject.net.DefaultDevice;
+import org.onosproject.net.Device;
+import org.onosproject.net.DeviceId;
 import org.onosproject.net.device.DeviceEvent;
+import org.onosproject.net.provider.ProviderId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +127,14 @@ public class DeviceEventConverter implements EventConverter {
                 protobufEventType = deviceEventType;
             }
         }
-
         return protobufEventType;
+    }
+
+    private DeviceEvent getEvent(DeviceNotificationProto deviceNotificationProto){
+        DeviceProto deviceProto = deviceNotificationProto.getDevice();
+        String chassisId = deviceProto.getChassisId();
+        String hwVersion = deviceProto.getHwVersion();
+        String swVersion = deviceProto.getSwVersion();
+        return null;
     }
 }

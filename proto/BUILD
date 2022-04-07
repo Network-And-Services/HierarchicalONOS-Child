@@ -3,7 +3,6 @@ load("@io_grpc_grpc_java//:java_grpc_library.bzl", "java_grpc_library")
 
 PROTO_SOURCE_ROOT = "//apps/hierarchical-sync-worker/proto"
 
-
 wrapped_osgi_jar(
     name = "Hierarchical_gRPC",
     jar = ":Hierarchical_grpc_java_proto",
