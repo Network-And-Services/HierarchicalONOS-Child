@@ -15,25 +15,12 @@
  */
 package org.onosproject.hierarchicalsyncworker.api;
 
-import org.onosproject.hierarchicalsyncmaster.api.dto.OnosEvent;
+import org.onosproject.hierarchicalsyncworker.proto.Hierarchical.Response;
+import org.onosproject.hierarchicalsyncworker.proto.Hierarchical.Request;
 
-/**
- * APIs to insert and delete into a local store. This store is used to keep
- * track of events that are being published.
- */
-public interface GrpcEventStorageService {
+import java.util.concurrent.Future;
 
-    /**
-     * Inserts the Onos Event into Distributed Work Queue.
-     *
-     * @param event the ONOS Event
-     */
-    void publishEvent(OnosEvent event);
+public interface GrpcPublisherService {
 
-    /**
-     * Removes the Onos Event from the Distributed Work Queue.
-     *
-     * @return the Onos Event
-     */
-    OnosEvent consumeEvent();
+    Response send(Request record);
 }

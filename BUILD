@@ -20,7 +20,8 @@ BUNDLES = [
     "@com_google_code_gson_gson//jar",
     "//apps/hierarchical-sync-worker/api:onos-apps-hierarchical-sync-worker-api",
     "//apps/hierarchical-sync-worker/app:onos-apps-hierarchical-sync-worker-app",
-    "//apps/hierarchical-sync-worker/proto:Hierarchical_gRPC",
+    "//apps/hierarchical-sync-worker/proto:HierarchicalServices",
+    "//apps/hierarchical-sync-worker/proto:HierarchicalProto",
 ]
 
 onos_app(

@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 package org.onosproject.hierarchicalsyncworker.converter;
-import static org.onosproject.hierarchicalsyncworker.converter.OnosEvent.Type.DEVICE;
-import static org.onosproject.hierarchicalsyncworker.converter.OnosEvent.Type.LINK;
+import static org.onosproject.hierarchicalsyncmaster.converter.OnosEvent.Type.DEVICE;
+import static org.onosproject.hierarchicalsyncmaster.converter.OnosEvent.Type.LINK;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.onosproject.hierarchicalsyncworker.converter.OnosEvent.Type;
+
+import org.onosproject.hierarchicalsyncmaster.converter.DeviceEventConverter;
+import org.onosproject.hierarchicalsyncmaster.converter.EventConverter;
+import org.onosproject.hierarchicalsyncmaster.converter.LinkEventConverter;
+import org.onosproject.hierarchicalsyncmaster.converter.OnosEvent.Type;
 
 
 
@@ -30,8 +34,8 @@ import org.onosproject.hierarchicalsyncworker.converter.OnosEvent.Type;
 public final class ConversionFactory {
 
     // Store converters for all supported events
-    private Map<Type, EventConverter> converters =
-            new HashMap<Type, EventConverter>() {
+    private Map<Type, org.onosproject.hierarchicalsyncmaster.converter.EventConverter> converters =
+            new HashMap<Type, org.onosproject.hierarchicalsyncmaster.converter.EventConverter>() {
                 {
                     put(DEVICE, new DeviceEventConverter());
                     put(LINK, new LinkEventConverter());
@@ -43,8 +47,8 @@ public final class ConversionFactory {
     }
 
     private static class SingletonHolder {
-        private static final ConversionFactory INSTANCE =
-                new ConversionFactory();
+        private static final org.onosproject.hierarchicalsyncmaster.converter.ConversionFactory INSTANCE =
+                new org.onosproject.hierarchicalsyncmaster.converter.ConversionFactory();
     }
 
     /**
@@ -52,7 +56,7 @@ public final class ConversionFactory {
      *
      * @return singleton object
      */
-    public static ConversionFactory getInstance() {
+    public static org.onosproject.hierarchicalsyncmaster.converter.ConversionFactory getInstance() {
         return SingletonHolder.INSTANCE;
     }
 

@@ -23,6 +23,7 @@ import org.onosproject.grpc.net.link.models.LinkEnumsProto.LinkTypeProto;
 import org.onosproject.grpc.net.link.models.LinkEventProto.LinkNotificationProto;
 import org.onosproject.grpc.net.models.ConnectPointProtoOuterClass.ConnectPointProto;
 import org.onosproject.grpc.net.models.LinkProtoOuterClass.LinkProto;
+import org.onosproject.hierarchicalsyncmaster.converter.EventConverter;
 import org.onosproject.net.link.LinkEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

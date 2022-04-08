@@ -15,8 +15,8 @@
  */
 package org.onosproject.hierarchicalsyncworker.impl;
 
-import org.onosproject.hierarchicalsyncworker.api.GrpcEventStorageService;
-import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
+import org.onosproject.hierarchicalsyncmaster.api.GrpcEventStorageService;
+import org.onosproject.hierarchicalsyncmaster.api.dto.OnosEvent;
 import org.onosproject.store.serializers.KryoNamespaces;
 import org.onosproject.store.service.Serializer;
 import org.onosproject.store.service.StorageService;

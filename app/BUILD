@@ -20,7 +20,8 @@ COMPILE_DEPS = CORE_DEPS + [
     "//core/protobuf/models:onos-core-protobuf-models",
     "//core/protobuf/models/proto:onos-core-protobuf-models-proto",
     "//apps/hierarchical-sync-worker/api:onos-apps-hierarchical-sync-worker-api",
-    "//apps/hierarchical-sync-worker/proto:Hierarchical_gRPC",
+    "//apps/hierarchical-sync-worker/proto:HierarchicalServices",
+    "//apps/hierarchical-sync-worker/proto:HierarchicalProto"
 ]
 
 osgi_jar_with_tests(

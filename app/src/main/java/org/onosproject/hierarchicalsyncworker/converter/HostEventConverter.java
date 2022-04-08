@@ -22,6 +22,7 @@ import org.onosproject.event.Event;
 import org.onosproject.grpc.net.host.models.HostEnumsProto.HostEventTypeProto;
 import org.onosproject.grpc.net.host.models.HostEventProto.HostNotificationProto;
 import org.onosproject.grpc.net.models.HostProtoOuterClass.HostProto;
+import org.onosproject.hierarchicalsyncmaster.converter.EventConverter;
 import org.onosproject.incubator.protobuf.models.net.AnnotationsTranslator;
 import org.onosproject.incubator.protobuf.models.net.HostIdProtoTranslator;
 import org.onosproject.incubator.protobuf.models.net.HostLocationProtoTranslator;

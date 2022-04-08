@@ -6,7 +6,8 @@ service HierarchicalService {
 }
 
 message Request {
-  string request = 1;
+  string type = 1;
+  bytes request = 2;
 }
 
 message Response {

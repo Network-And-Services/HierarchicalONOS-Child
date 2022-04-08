@@ -1,14 +1,19 @@
 load("//tools/build/bazel:osgi_java_library.bzl", "wrapped_osgi_jar")
+load("//tools/build/bazel:osgi_java_library.bzl", "osgi_proto_jar")
 load("@io_grpc_grpc_java//:java_grpc_library.bzl", "java_grpc_library")
 
-PROTO_SOURCE_ROOT = "//apps/hierarchical-sync-worker/proto"
-
 wrapped_osgi_jar(
-    name = "Hierarchical_gRPC",
+    name = "HierarchicalServices",
     jar = ":Hierarchical_grpc_java_proto",
     visibility = ["//visibility:public"],
     deps = CORE_DEPS,
 )
+osgi_proto_jar(
+    name = "HierarchicalProto",
+    proto_libs = [":Hierarchical_proto"],
+    visibility = ["//visibility:public"],
+)
+
 
 
 proto_library(

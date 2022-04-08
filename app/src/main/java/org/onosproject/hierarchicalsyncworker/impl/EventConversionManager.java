@@ -17,12 +17,12 @@
 package org.onosproject.hierarchicalsyncworker.impl;
 
 import org.onosproject.event.Event;
-import org.onosproject.hierarchicalsyncworker.api.EventConversionService;
-import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
-import org.onosproject.hierarchicalsyncworker.converter.DeviceEventConverter;
-import org.onosproject.hierarchicalsyncworker.converter.EventConverter;
-import org.onosproject.hierarchicalsyncworker.converter.HostEventConverter;
-import org.onosproject.hierarchicalsyncworker.converter.LinkEventConverter;
+import org.onosproject.hierarchicalsyncmaster.api.EventConversionService;
+import org.onosproject.hierarchicalsyncmaster.api.dto.OnosEvent;
+import org.onosproject.hierarchicalsyncmaster.converter.DeviceEventConverter;
+import org.onosproject.hierarchicalsyncmaster.converter.EventConverter;
+import org.onosproject.hierarchicalsyncmaster.converter.HostEventConverter;
+import org.onosproject.hierarchicalsyncmaster.converter.LinkEventConverter;
 import org.onosproject.net.device.DeviceEvent;
 import org.onosproject.net.host.HostEvent;
 import org.onosproject.net.link.LinkEvent;
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent.Type.*;
+import static org.onosproject.hierarchicalsyncmaster.api.dto.OnosEvent.Type.*;
 
 /**
  * Implementation of Event Conversion Service.
