@@ -17,7 +17,7 @@
 package org.onosproject.hierarchicalsyncworker.api;
 
 import org.onosproject.event.Event;
-import org.onosproject.hierarchicalsyncmaster.api.dto.OnosEvent;
+import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
 
 /**
  * API for conversion of various ONOS events to Protobuf.

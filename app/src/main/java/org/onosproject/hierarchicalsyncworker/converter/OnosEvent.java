@@ -22,7 +22,7 @@ import org.onosproject.event.AbstractEvent;
  *
  */
 // FIXME lack of abstraction in subject type is biting us
-public class OnosEvent extends AbstractEvent<org.onosproject.hierarchicalsyncmaster.converter.OnosEvent.Type, byte[]> {
+public class OnosEvent extends AbstractEvent<org.onosproject.hierarchicalsyncworker.converter.OnosEvent.Type, byte[]> {
 
     /**
      * Creates a new Onos Event.

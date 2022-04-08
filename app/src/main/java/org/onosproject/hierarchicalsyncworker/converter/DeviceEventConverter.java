@@ -25,7 +25,7 @@ import org.onosproject.grpc.net.device.models.DeviceEventProto.DeviceNotificatio
 import org.onosproject.grpc.net.device.models.PortEnumsProto;
 import org.onosproject.grpc.net.models.DeviceProtoOuterClass.DeviceProto;
 import org.onosproject.grpc.net.models.PortProtoOuterClass;
-import org.onosproject.hierarchicalsyncmaster.converter.EventConverter;
+import org.onosproject.hierarchicalsyncworker.converter.EventConverter;
 import org.onosproject.incubator.protobuf.models.net.AnnotationsTranslator;
 import org.onosproject.net.Device;
 import org.onosproject.net.device.DefaultDeviceDescription;

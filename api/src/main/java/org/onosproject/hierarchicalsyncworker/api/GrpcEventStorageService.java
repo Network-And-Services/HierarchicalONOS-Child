@@ -15,7 +15,7 @@
  */
 package org.onosproject.hierarchicalsyncworker.api;
 
-import org.onosproject.hierarchicalsyncmaster.api.dto.OnosEvent;
+import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
 
 /**
  * APIs to insert and delete into a local store. This store is used to keep

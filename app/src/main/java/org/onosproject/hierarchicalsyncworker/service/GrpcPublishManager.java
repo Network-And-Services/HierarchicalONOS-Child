@@ -16,8 +16,8 @@
 
 package org.onosproject.hierarchicalsyncworker.service;
 
-import org.onosproject.hierarchicalsyncmaster.api.GrpcPublisherService;
-import org.onosproject.hierarchicalsyncmaster.service.GrpcClientWorker;
+import org.onosproject.hierarchicalsyncworker.api.GrpcPublisherService;
+import org.onosproject.hierarchicalsyncworker.service.GrpcClientWorker;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 @Component(service = { GrpcPublisherService.class})
 public class GrpcPublishManager implements GrpcPublisherService {
-    private org.onosproject.hierarchicalsyncmaster.service.GrpcClientWorker clientWorker;
+    private org.onosproject.hierarchicalsyncworker.service.GrpcClientWorker clientWorker;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
