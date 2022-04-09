@@ -1,6 +1,5 @@
 COMPILE_DEPS = CORE_DEPS + [
-    "//apps/hierarchical-sync-worker/proto:HierarchicalServices",
-    "//apps/hierarchical-sync-worker/proto:HierarchicalProto"
+    "//apps/hierarchical-sync-worker/proto:HierarchicalWorkerServices",
     ]
 osgi_jar_with_tests(
     deps = COMPILE_DEPS,

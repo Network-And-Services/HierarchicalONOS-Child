@@ -20,9 +20,6 @@ import static org.onosproject.hierarchicalsyncworker.converter.OnosEvent.Type.LI
 import java.util.HashMap;
 import java.util.Map;
 
-import org.onosproject.hierarchicalsyncworker.converter.DeviceEventConverter;
-import org.onosproject.hierarchicalsyncworker.converter.EventConverter;
-import org.onosproject.hierarchicalsyncworker.converter.LinkEventConverter;
 import org.onosproject.hierarchicalsyncworker.converter.OnosEvent.Type;
 
 
@@ -34,8 +31,8 @@ import org.onosproject.hierarchicalsyncworker.converter.OnosEvent.Type;
 public final class ConversionFactory {
 
     // Store converters for all supported events
-    private Map<Type, org.onosproject.hierarchicalsyncworker.converter.EventConverter> converters =
-            new HashMap<Type, org.onosproject.hierarchicalsyncworker.converter.EventConverter>() {
+    private Map<Type, EventConverter> converters =
+            new HashMap<Type, EventConverter>() {
                 {
                     put(DEVICE, new DeviceEventConverter());
                     put(LINK, new LinkEventConverter());

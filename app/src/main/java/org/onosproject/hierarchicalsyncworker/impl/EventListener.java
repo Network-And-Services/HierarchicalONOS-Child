@@ -22,7 +22,6 @@ import org.onosproject.cluster.NodeId;
 import org.onosproject.hierarchicalsyncworker.api.EventConversionService;
 import org.onosproject.hierarchicalsyncworker.api.GrpcEventStorageService;
 import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
-import org.onosproject.net.DeviceId;
 import org.onosproject.net.device.*;
 import org.onosproject.net.host.HostEvent;
 import org.onosproject.net.host.HostListener;
@@ -35,7 +34,6 @@ import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
@@ -62,19 +60,13 @@ public class EventListener {
     protected HostService hostService;
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
-    protected LeadershipService leadershipService;
-
-    @Reference(cardinality = ReferenceCardinality.MANDATORY)
     protected ClusterService clusterService;
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    protected LeadershipService leadershipService;
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
     protected GrpcEventStorageService grpcEventStorageService;
-
-    @Reference(cardinality = ReferenceCardinality.MANDATORY)
-    protected DeviceProviderService deviceProviderService;
-
-    @Reference(cardinality = ReferenceCardinality.MANDATORY)
-    protected LinkProviderService linkProviderService;
 
     private final DeviceListener deviceListener = new InternalDeviceListener();
     private final LinkListener linkListener = new InternalLinkListener();
@@ -93,11 +85,7 @@ public class EventListener {
         deviceService.addListener(deviceListener);
         linkService.addListener(linkListener);
         hostService.addListener(hostListener);
-        //DefaultDeviceDescription deviceDescription = new DefaultDeviceDescription();
-        //deviceProviderService.deviceConnected();
-        //deviceProviderService.updatePorts();
-        //linkProviderService.linkDetected(); NullDeviceProvide, NullLinkProvider,
-        DeviceId deviceId = DeviceId.deviceId("Test");
+
         localNodeId = clusterService.getLocalNode().id();
 
         leadershipService.runForLeadership(PUBLISHER_TOPIC);
@@ -122,16 +110,19 @@ public class EventListener {
         @Override
         public void event(DeviceEvent event) {
             // do not allow to proceed without leadership
+            /*
             NodeId leaderNodeId = leadershipService.getLeader(PUBLISHER_TOPIC);
             if (!Objects.equals(localNodeId, leaderNodeId)) {
-                log.debug("Not a Leader, cannot publish!");
+                log.info("Not a Leader, cannot publish!");
                 return;
             }
+
+             */
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
             });
-            log.info("Pushed event {} to grpc storage", onosEvent);
+            log.debug("Pushed event {} to grpc storage", onosEvent);
 
         }
     }
@@ -142,16 +133,18 @@ public class EventListener {
         public void event(LinkEvent event) {
 
             // do not allow to proceed without leadership
+            /*
             NodeId leaderNodeId = leadershipService.getLeader(PUBLISHER_TOPIC);
             if (!Objects.equals(localNodeId, leaderNodeId)) {
-                log.debug("Not a Leader, cannot publish!");
+                log.info("Not a Leader, cannot publish!");
                 return;
             }
+             */
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
             });
-            log.info("Pushed event {} to grpc storage", onosEvent);
+            log.debug("Pushed event {} to grpc storage", onosEvent);
 
         }
     }
@@ -162,16 +155,19 @@ public class EventListener {
         public void event(HostEvent event) {
 
             // do not allow to proceed without leadership
+            /*
             NodeId leaderNodeId = leadershipService.getLeader(PUBLISHER_TOPIC);
             if (!Objects.equals(localNodeId, leaderNodeId)) {
-                log.debug("Not a Leader, cannot publish!");
+                log.info("Not a Leader, cannot publish!");
                 return;
             }
+
+             */
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
             });
-            log.info("Pushed event {} to grpc storage", onosEvent);
+            log.debug("Pushed event {} to grpc storage", onosEvent);
 
         }
     }

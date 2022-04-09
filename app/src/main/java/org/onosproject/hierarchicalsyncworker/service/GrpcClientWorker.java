@@ -1,21 +1,16 @@
 package org.onosproject.hierarchicalsyncworker.service;
 
+import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.Server;
 import io.grpc.StatusRuntimeException;
-import io.grpc.netty.NettyServerBuilder;
+import io.grpc.netty.NettyChannelBuilder;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 import org.onosproject.hierarchicalsyncworker.proto.HierarchicalServiceGrpc;
-import org.onosproject.net.device.DeviceService;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-@Component(immediate = true)
 public class GrpcClientWorker {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -24,13 +19,18 @@ public class GrpcClientWorker {
 
     private ManagedChannel channel;
 
-    @Activate
-    protected void activate() {
+    public GrpcClientWorker(){
         createBlockingStub();
+        log.info("Started");
+    }
+
+    public void deactivate() {
+        stopChannel();
+        log.info("Stopped");
     }
 
     private void createBlockingStub(){
-        ManagedChannel channel = ManagedChannelBuilder.forTarget("172.168.7.5:5908")
+        channel = NettyChannelBuilder.forAddress("172.168.7.5", 5908)
                 .usePlaintext()
                 .build();
         try {
@@ -52,17 +52,16 @@ public class GrpcClientWorker {
     public Hierarchical.Response sendOverGrpc(Hierarchical.Request request){
         Hierarchical.Response response;
         try {
+            log.info("sendOverGrpc");
             response = blockingStub.sayHello(request);
             return response;
+            //return null;
         } catch (StatusRuntimeException e) {
-            log.warn("RPC failed: {0}", e.getStatus());
+            log.warn("RPC failed: " + e.getStatus());
+            return null;
+        } catch (Exception e) {
+            log.warn("RPC failed ude to: " + e.toString());
             return null;
         }
-    }
-
-    @Deactivate
-    protected void deactivate() {
-        stopChannel();
-        log.info("Stopped");
     }
 }

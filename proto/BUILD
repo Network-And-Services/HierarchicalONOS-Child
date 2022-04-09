@@ -1,35 +1,25 @@
-load("//tools/build/bazel:osgi_java_library.bzl", "wrapped_osgi_jar")
 load("//tools/build/bazel:osgi_java_library.bzl", "osgi_proto_jar")
-load("@io_grpc_grpc_java//:java_grpc_library.bzl", "java_grpc_library")
 
-wrapped_osgi_jar(
-    name = "HierarchicalServices",
-    jar = ":Hierarchical_grpc_java_proto",
-    visibility = ["//visibility:public"],
-    deps = CORE_DEPS,
-)
+PROTOS = [
+    ":HierarchicalWorker_proto"
+]
+
 osgi_proto_jar(
-    name = "HierarchicalProto",
-    proto_libs = [":Hierarchical_proto"],
-    visibility = ["//visibility:public"],
+    name = "HierarchicalWorkerServices",
+    grpc_proto_lib = ":HierarchicalWorker_proto",
+    deps = [
+            "@com_google_api_grpc_proto_google_common_protos//jar",
+        ],
+    proto_libs = PROTOS,
 )
-
-
 
 proto_library(
-    name = "Hierarchical_proto",
+    name = "HierarchicalWorker_proto",
     srcs = ["Hierarchical.proto"],
-)
-
-java_proto_library(
-    name = "Hierarchical_java_proto",
-    deps = [":Hierarchical_proto"],
-)
-
-java_grpc_library(
-    name = "Hierarchical_grpc_java_proto",
-    deps = [":Hierarchical_java_proto"],
-    srcs = [":Hierarchical_proto"],
+    deps = [
+            "@com_google_protobuf//:any_proto",
+            "@com_google_protobuf//:descriptor_proto",
+        ],
 )
 
 

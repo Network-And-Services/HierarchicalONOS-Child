@@ -92,7 +92,6 @@ public class EventPublisher {
 
         @Override
         public void run() {
-
             // do not allow to proceed without leadership
             NodeId leaderNodeId = leadershipService.getLeader(contantion);
             if (!Objects.equals(localNodeId, leaderNodeId)) {
@@ -106,7 +105,7 @@ public class EventPublisher {
                     grpcPublisherService.send(Hierarchical.Request.newBuilder().
                             setType(onosEvent.type().toString()).
                             setRequest(ByteString.copyFrom(onosEvent.subject())).build());
-                    log.info("Event Type - {}, Subject {} sent successfully.",
+                    log.debug("Event Type - {}, Subject {} sent successfully.",
                              onosEvent.type(), onosEvent.subject());
                 }
             } catch (Exception e1) {
@@ -114,7 +113,6 @@ public class EventPublisher {
                 Thread.currentThread().interrupt();
             }
         }
-
 
     }
 
