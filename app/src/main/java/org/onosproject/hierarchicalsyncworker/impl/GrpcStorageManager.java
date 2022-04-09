@@ -78,7 +78,7 @@ public class GrpcStorageManager implements GrpcEventStorageService {
 
         if (task != null) {
             queue.complete(task.taskId());
-            log.debug("Consumed {} Event from Distributed Work Queue with id {}",
+            log.info("Consumed {} Event from Distributed Work Queue with id {}",
                      task.payload().type(), task.taskId());
             return task.payload();
         }

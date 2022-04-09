@@ -47,10 +47,5 @@ public class OnosEvent extends AbstractEvent<org.onosproject.hierarchicalsyncwor
          * Signifies Link events.
          */
         LINK,
-
-        /**
-         * Signifies Host events.
-         */
-        HOST
     }
 }
