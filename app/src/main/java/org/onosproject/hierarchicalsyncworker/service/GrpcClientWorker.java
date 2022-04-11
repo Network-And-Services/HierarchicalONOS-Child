@@ -1,6 +1,5 @@
 package org.onosproject.hierarchicalsyncworker.service;
 
-import com.google.protobuf.ByteString;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.NettyChannelBuilder;
@@ -55,7 +54,6 @@ public class GrpcClientWorker {
             log.info("sendOverGrpc");
             response = blockingStub.sayHello(request);
             return response;
-            //return null;
         } catch (StatusRuntimeException e) {
             log.warn("RPC failed: " + e.getStatus());
             return null;

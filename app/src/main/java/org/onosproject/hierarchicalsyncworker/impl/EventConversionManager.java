@@ -23,7 +23,6 @@ import org.onosproject.hierarchicalsyncworker.converter.DeviceEventConverter;
 import org.onosproject.hierarchicalsyncworker.converter.EventConverter;
 import org.onosproject.hierarchicalsyncworker.converter.LinkEventConverter;
 import org.onosproject.net.device.DeviceEvent;
-import org.onosproject.net.host.HostEvent;
 import org.onosproject.net.link.LinkEvent;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -48,7 +47,6 @@ public class EventConversionManager implements EventConversionService {
     protected void activate() {
         deviceEventConverter = new DeviceEventConverter();
         linkEventConverter = new LinkEventConverter();
-
         log.info("My app Started!");
     }
 

@@ -16,9 +16,7 @@
 
 package org.onosproject.hierarchicalsyncworker.impl;
 
-import org.onosproject.cluster.ClusterService;
-import org.onosproject.cluster.LeadershipService;
-import org.onosproject.cluster.NodeId;
+import org.onosproject.cluster.*;
 import org.onosproject.hierarchicalsyncworker.api.EventConversionService;
 import org.onosproject.hierarchicalsyncworker.api.GrpcEventStorageService;
 import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
@@ -64,10 +62,13 @@ public class EventListener {
 
     private final DeviceListener deviceListener = new InternalDeviceListener();
     private final LinkListener linkListener = new InternalLinkListener();
+    private final LeadershipEventListener leadershipListener = new InternalLeadershipListener();
 
     protected ExecutorService eventExecutor;
 
     private static final String PUBLISHER_TOPIC = "WORK_QUEUE_PUBLISHER";
+
+    private boolean topicLeader;
 
     private NodeId localNodeId;
 
@@ -77,9 +78,10 @@ public class EventListener {
         eventExecutor = newSingleThreadScheduledExecutor(groupedThreads("onos/onosEvents", "events-%d", log));
         deviceService.addListener(deviceListener);
         linkService.addListener(linkListener);
+        leadershipService.addListener(leadershipListener);
 
         localNodeId = clusterService.getLocalNode().id();
-
+        topicLeader = false;
         leadershipService.runForLeadership(PUBLISHER_TOPIC);
 
         log.info("Started");
@@ -89,6 +91,7 @@ public class EventListener {
     protected void deactivate() {
         deviceService.removeListener(deviceListener);
         linkService.removeListener(linkListener);
+        leadershipService.removeListener(leadershipListener);
 
         eventExecutor.shutdownNow();
         eventExecutor = null;
@@ -96,13 +99,26 @@ public class EventListener {
         log.info("Stopped");
     }
 
+    private class InternalLeadershipListener implements LeadershipEventListener {
+
+        @Override
+        public void event(LeadershipEvent event) {
+            if(event.subject().topic().equals(PUBLISHER_TOPIC)){
+                boolean amItheLeader = Objects.equals(localNodeId,leadershipService.getLeader(PUBLISHER_TOPIC));
+                if (amItheLeader != topicLeader){
+                    topicLeader = amItheLeader;
+                    log.info("Leadership changed to: "+  amItheLeader);
+                }
+            }
+        }
+    }
+
     private class InternalDeviceListener implements DeviceListener {
 
         @Override
         public void event(DeviceEvent event) {
 
-            NodeId leaderNodeId = leadershipService.getLeader(PUBLISHER_TOPIC);
-            if (!Objects.equals(localNodeId, leaderNodeId)) {
+            if (!topicLeader) {
                 log.info("Not a Leader, cannot publish!");
                 return;
             }
@@ -121,8 +137,7 @@ public class EventListener {
         @Override
         public void event(LinkEvent event) {
 
-            NodeId leaderNodeId = leadershipService.getLeader(PUBLISHER_TOPIC);
-            if (!Objects.equals(localNodeId, leaderNodeId)) {
+            if (!topicLeader) {
                 log.info("Not a Leader, cannot publish!");
                 return;
             }
