@@ -37,7 +37,7 @@ public class GrpcStorageManager implements GrpcEventStorageService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private static final String GRPC_WORK_QUEUE = "Grpc-Work-Queue";
+    private static final String GRPC_WORK_QUEUE = "GRPC_WORK_QUEUE_WORKER";
 
     private WorkQueue<OnosEvent> queue;
 

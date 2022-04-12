@@ -92,7 +92,7 @@ public class EventListener {
         deviceService.removeListener(deviceListener);
         linkService.removeListener(linkListener);
         leadershipService.removeListener(leadershipListener);
-
+        leadershipService.withdraw(PUBLISHER_TOPIC);
         eventExecutor.shutdownNow();
         eventExecutor = null;
 

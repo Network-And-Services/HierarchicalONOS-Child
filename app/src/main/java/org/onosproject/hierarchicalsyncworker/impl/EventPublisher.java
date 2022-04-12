@@ -56,14 +56,14 @@ public class EventPublisher {
     // Thread Scheduler Parameters
     private final long delay = 0;
     private final long period = 1;
-    private final String contantion = "PUBLISHER";
+    private final String contention = "PUBLISHER_WORKER";
 
     private EventCollector eventCollector;
 
     @Activate
     protected void activate() {
 
-        leadershipService.runForLeadership(contantion);
+        leadershipService.runForLeadership(contention);
 
         localNodeId = clusterService.getLocalNode().id();
 
@@ -81,6 +81,7 @@ public class EventPublisher {
     @Deactivate
     protected void deactivate() {
         stopCollector();
+        leadershipService.withdraw(contention);
         log.info("Stopped");
     }
 
@@ -93,7 +94,7 @@ public class EventPublisher {
         @Override
         public void run() {
             // do not allow to proceed without leadership
-            NodeId leaderNodeId = leadershipService.getLeader(contantion);
+            NodeId leaderNodeId = leadershipService.getLeader(contention);
             if (!Objects.equals(localNodeId, leaderNodeId)) {
                 log.debug("Not a Leader so cannot consume event");
                 return;

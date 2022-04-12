@@ -51,7 +51,6 @@ public class GrpcClientWorker {
     public Hierarchical.Response sendOverGrpc(Hierarchical.Request request){
         Hierarchical.Response response;
         try {
-            log.info("sendOverGrpc");
             response = blockingStub.sayHello(request);
             return response;
         } catch (StatusRuntimeException e) {
