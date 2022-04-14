@@ -123,6 +123,11 @@ public class EventListener {
                 return;
             }
 
+            //TODO: Adjust this Temporal filter
+            if (event.type().equals(DeviceEvent.Type.PORT_STATS_UPDATED)){
+                return;
+            }
+
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
