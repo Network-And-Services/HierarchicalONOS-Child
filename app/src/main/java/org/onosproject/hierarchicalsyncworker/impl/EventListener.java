@@ -119,7 +119,7 @@ public class EventListener {
         public void event(DeviceEvent event) {
 
             if (!topicLeader) {
-                log.info("Not a Leader, cannot publish!");
+                log.debug("Not a Leader, cannot publish!");
                 return;
             }
 
