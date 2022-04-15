@@ -18,8 +18,6 @@ package org.onosproject.hierarchicalsyncworker.api;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical.Response;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical.Request;
 
-import java.util.concurrent.Future;
-
 public interface GrpcPublisherService {
 
     Response send(Request record);

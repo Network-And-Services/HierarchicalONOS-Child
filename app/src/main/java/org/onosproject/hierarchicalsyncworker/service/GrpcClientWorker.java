@@ -5,7 +5,6 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.netty.NettyChannelBuilder;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 import org.onosproject.hierarchicalsyncworker.proto.HierarchicalServiceGrpc;
-import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;

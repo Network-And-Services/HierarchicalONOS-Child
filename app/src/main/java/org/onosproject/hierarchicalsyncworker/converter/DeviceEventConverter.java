@@ -26,15 +26,9 @@ import org.onosproject.grpc.net.device.models.PortEnumsProto;
 import org.onosproject.grpc.net.models.DeviceProtoOuterClass.DeviceProto;
 import org.onosproject.grpc.net.models.PortProtoOuterClass;
 import org.onosproject.incubator.protobuf.models.net.AnnotationsTranslator;
-import org.onosproject.net.Device;
-import org.onosproject.net.device.DefaultDeviceDescription;
 import org.onosproject.net.device.DeviceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
 
 /**
  * Converts ONOS Device event message to protobuf format.
@@ -128,25 +122,5 @@ public class DeviceEventConverter implements EventConverter {
             }
         }
         return protobufEventType;
-    }
-
-    private DeviceEvent getEvent(DeviceNotificationProto deviceNotificationProto){
-        //deviceProviderService.deviceConnected();
-        DeviceProto deviceProto = deviceNotificationProto.getDevice();
-        String hwVersion = deviceProto.getHwVersion();
-        Device.Type type = Device.Type.valueOf(deviceProto.getType().toString());
-        String swVersion = deviceProto.getSwVersion();
-        String manufacturer = deviceProto.getManufacturer();
-        String serialNumber = deviceProto.getSerialNumber();
-        ChassisId chassisId = new ChassisId(deviceProto.getChassisId());
-        Map<String, String> annotationsMap = deviceProto.getAnnotationsMap();
-        URI uri = null;
-        try {
-            uri = new URI(serialNumber);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        DefaultDeviceDescription deviceDescription = new DefaultDeviceDescription(uri, type, manufacturer, hwVersion, swVersion, serialNumber, chassisId);
-        return null;
     }
 }
