@@ -29,11 +29,4 @@ public interface GrpcEventStorageService {
      * @param event the ONOS Event
      */
     void publishEvent(OnosEvent event);
-
-    /**
-     * Removes the Onos Event from the Distributed Work Queue.
-     *
-     * @return the Onos Event
-     */
-    OnosEvent consumeEvent();
 }

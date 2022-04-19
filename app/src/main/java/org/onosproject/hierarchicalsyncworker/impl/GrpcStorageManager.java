@@ -24,14 +24,11 @@ import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 import org.onosproject.store.serializers.KryoNamespaces;
 import org.onosproject.store.service.Serializer;
 import org.onosproject.store.service.StorageService;
-import org.onosproject.store.service.Task;
 import org.onosproject.store.service.WorkQueue;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
@@ -98,41 +95,17 @@ public class GrpcStorageManager implements GrpcEventStorageService {
         log.debug("Published {} Event to Distributed Work Queue", e.type());
     }
 
-    @Override
-    public OnosEvent consumeEvent() {
-        Task<OnosEvent> task = null;
-
-        CompletableFuture<Task<OnosEvent>> future = queue.take();
-        try {
-            task = future.get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            log.warn("consumeEvent()", e);
-        }
-
-        if (task != null) {
-            queue.complete(task.taskId());
-            log.debug("Consumed {} Event from Distributed Work Queue with id {}",
-                     task.payload().type(), task.taskId());
-            return task.payload();
-        }
-
-        return null;
-    }
-
     private void sendEvent(OnosEvent onosEvent){
         if (onosEvent != null) {
             grpcPublisherService.send(Hierarchical.Request.newBuilder().
                     setType(onosEvent.type().toString()).
                     setRequest(ByteString.copyFrom(onosEvent.subject())).build());
-            log.info("Event Type - {}, Subject {} sent successfully.",
+            log.debug("Event Type - {}, Subject {} sent successfully.",
                     onosEvent.type(), onosEvent.subject());
         }
     }
 
     private class InternalLeadershipListener implements LeadershipEventListener {
-
         @Override
         public void event(LeadershipEvent event) {
             if(event.subject().topic().equals(contention)){
