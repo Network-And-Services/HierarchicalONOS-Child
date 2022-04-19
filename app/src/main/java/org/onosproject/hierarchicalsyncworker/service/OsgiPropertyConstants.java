@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-present Open Networking Foundation
+ * Copyright 2018-present Open Networking Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onosproject.hierarchicalsyncworker.api;
 
-import org.onosproject.hierarchicalsyncworker.proto.Hierarchical.Response;
-import org.onosproject.hierarchicalsyncworker.proto.Hierarchical.Request;
+package org.onosproject.hierarchicalsyncworker.service;
 
-public interface GrpcPublisherService {
-    Response send(Request record);
+/**
+ * Constants for default values of configurable properties.
+ */
+public final class OsgiPropertyConstants {
+    //TODO: To be handled with configService
+    private OsgiPropertyConstants() {
+    }
+    static final String MASTER_CLUSTER_ADDRESSES = "masterAddresses";
+    static final String[] MASTER_CLUSTER_ADDRESSES_DEFAULT = {"172.168.7.5"};
+
+
 }

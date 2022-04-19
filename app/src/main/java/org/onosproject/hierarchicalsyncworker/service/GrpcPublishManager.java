@@ -15,66 +15,40 @@
  */
 
 package org.onosproject.hierarchicalsyncworker.service;
-
+import org.onosproject.hierarchicalsyncworker.api.GrpcClientService;
 import org.onosproject.hierarchicalsyncworker.api.GrpcPublisherService;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.onosproject.hierarchicalsyncworker.service.OsgiPropertyConstants.MASTER_CLUSTER_ADDRESSES_DEFAULT;
 /**
  * Implementation of a Kafka Producer.
  */
-@Component(service = { GrpcPublisherService.class})
+@Component(immediate = true, service = GrpcPublisherService.class)
 public class GrpcPublishManager implements GrpcPublisherService {
-    private GrpcClientWorker clientWorker;
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    protected GrpcClientService grpcClientService;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     @Activate
     protected void activate() {
-        start();
+        grpcClientService.start(MASTER_CLUSTER_ADDRESSES_DEFAULT);
         log.info("Started");
     }
 
     @Deactivate
     protected void deactivate() {
-        stop();
+        grpcClientService.stop();
         log.info("Stopped");
-    }
-
-
-    public void start() {
-
-        if (clientWorker != null) {
-            log.info("Client Grpc has already started");
-            return;
-        }
-
-        clientWorker = new GrpcClientWorker();
-
-        log.info("Client Grpc has started.");
-    }
-
-
-    public void stop() {
-        if (clientWorker != null) {
-            clientWorker.deactivate();
-            clientWorker = null;
-        }
-        log.info("Client Grpc has Stopped");
-    }
-
-
-    public void restart() {
-        stop();
-        start();
     }
 
     @Override
     public Hierarchical.Response send(Hierarchical.Request record) {
-        return clientWorker.sendOverGrpc(record);
+        if (!grpcClientService.isRunning()){
+            grpcClientService.restart();
+        }
+        return grpcClientService.sendOverGrpc(record);
     }
 }

@@ -15,9 +15,14 @@
  */
 package org.onosproject.hierarchicalsyncworker.api;
 
-import org.onosproject.hierarchicalsyncworker.proto.Hierarchical.Response;
-import org.onosproject.hierarchicalsyncworker.proto.Hierarchical.Request;
+import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 
-public interface GrpcPublisherService {
-    Response send(Request record);
+public interface GrpcClientService {
+
+    void start(String[] clusterAddresses);
+
+    void stop();
+    void restart();
+    boolean isRunning();
+    Hierarchical.Response sendOverGrpc(Hierarchical.Request request);
 }
