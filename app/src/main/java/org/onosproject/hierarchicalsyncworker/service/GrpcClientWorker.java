@@ -80,6 +80,7 @@ public class GrpcClientWorker implements GrpcClientService {
             response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sayHello(request);
             return response;
         } catch (StatusRuntimeException e) {
+            //TODO: MAKE THEM RELEASE ERROR SO THAT ATOMIX TASKER DOES NOT COMPLETE
             log.warn("RPC failed: " + e.getStatus());
             restart();
             return null;
