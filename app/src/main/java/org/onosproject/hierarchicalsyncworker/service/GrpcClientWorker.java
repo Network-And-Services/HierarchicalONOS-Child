@@ -25,6 +25,8 @@ public class GrpcClientWorker implements GrpcClientService {
     private String[] clusterAddresses;
     private int currentAddress;
 
+    private int initialAddress;
+
     private void createBlockingStub(){
         channel = NettyChannelBuilder.forAddress(clusterAddresses[currentAddress], 5908)
                 .usePlaintext()
@@ -40,6 +42,7 @@ public class GrpcClientWorker implements GrpcClientService {
     public void start(String[] clusterAddresses) {
         this.clusterAddresses = clusterAddresses;
         currentAddress = new Random().nextInt(clusterAddresses.length);
+        initialAddress = currentAddress;
         createBlockingStub();
         log.info("Client gRPC Started");
     }
@@ -49,13 +52,19 @@ public class GrpcClientWorker implements GrpcClientService {
         stopChannel();
         log.info("Client gRPC Stopped");
     }
-    @Override
-    public void restart(){
-        if(currentAddress+1<clusterAddresses.length){
-            currentAddress+=1;
+
+    private int nextAddress(){
+        int localAddress = currentAddress;
+        if(localAddress+1<clusterAddresses.length){
+            localAddress+=1;
         } else {
-            currentAddress=0;
+            localAddress=0;
         }
+        return localAddress;
+    }
+
+    private void restart(){
+        currentAddress = nextAddress();
         stopChannel();
         createBlockingStub();
         log.info("Client gRPC is restarted");
@@ -75,18 +84,15 @@ public class GrpcClientWorker implements GrpcClientService {
 
     @Override
     public Hierarchical.Response sendOverGrpc(Hierarchical.Request request){
-        Hierarchical.Response response;
-        try {
+        Hierarchical.Response response = null;
+        try{
             response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sayHello(request);
-            return response;
-        } catch (StatusRuntimeException e) {
-            //TODO: MAKE THEM RELEASE ERROR SO THAT ATOMIX TASKER DOES NOT COMPLETE
-            log.warn("RPC failed: " + e.getStatus());
-            restart();
-            return null;
-        } catch (Exception e) {
-            log.warn("RPC failed ude to: " + e.toString());
-            return null;
+        } catch (StatusRuntimeException e){
+            if (nextAddress() != initialAddress){
+                restart();
+                response = sendOverGrpc(request);
+            }
         }
+        return response;
     }
 }

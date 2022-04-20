@@ -47,7 +47,8 @@ public class GrpcPublishManager implements GrpcPublisherService {
     @Override
     public Hierarchical.Response send(Hierarchical.Request record) {
         if (!grpcClientService.isRunning()){
-            grpcClientService.restart();
+            grpcClientService.stop();
+            grpcClientService.start(MASTER_CLUSTER_ADDRESSES_DEFAULT);
         }
         return grpcClientService.sendOverGrpc(record);
     }

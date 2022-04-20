@@ -29,6 +29,7 @@ import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Objects;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
@@ -95,11 +96,17 @@ public class GrpcStorageManager implements GrpcEventStorageService {
         log.debug("Published {} Event to Distributed Work Queue", e.type());
     }
 
-    private void sendEvent(OnosEvent onosEvent){
+    private void sendEvent(OnosEvent onosEvent) {
         if (onosEvent != null) {
-            grpcPublisherService.send(Hierarchical.Request.newBuilder().
+            Hierarchical.Response response = grpcPublisherService.send(Hierarchical.Request.newBuilder().
                     setType(onosEvent.type().toString()).
                     setRequest(ByteString.copyFrom(onosEvent.subject())).build());
+            if(response == null){
+                queue.addOne(onosEvent);
+                log.debug("Event Type - {},  Reinserting event",
+                        onosEvent.type());
+                return;
+            }
             log.debug("Event Type - {}, Subject {} sent successfully.",
                     onosEvent.type(), onosEvent.subject());
         }
