@@ -22,8 +22,6 @@ public class GrpcClientWorker implements GrpcClientService {
     private String[] clusterAddresses;
     private int currentAddress;
 
-    private int initialAddress;
-
     private void createBlockingStub(){
         channel = NettyChannelBuilder.forTarget(clusterAddresses[currentAddress])
                 .usePlaintext()
@@ -39,7 +37,6 @@ public class GrpcClientWorker implements GrpcClientService {
     public void start(String[] clusterAddresses) {
         this.clusterAddresses = clusterAddresses;
         currentAddress = new Random().nextInt(clusterAddresses.length);
-        initialAddress = currentAddress;
         createBlockingStub();
         log.info("Client gRPC Started");
     }
