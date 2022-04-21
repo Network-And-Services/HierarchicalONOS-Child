@@ -17,18 +17,15 @@ import java.util.concurrent.TimeUnit;
 public class GrpcClientWorker implements GrpcClientService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     private HierarchicalServiceGrpc.HierarchicalServiceBlockingStub blockingStub;
-
     private ManagedChannel channel;
-
     private String[] clusterAddresses;
     private int currentAddress;
 
     private int initialAddress;
 
     private void createBlockingStub(){
-        channel = NettyChannelBuilder.forAddress(clusterAddresses[currentAddress], 5908)
+        channel = NettyChannelBuilder.forTarget(clusterAddresses[currentAddress])
                 .usePlaintext()
                 .build();
         try {
@@ -54,13 +51,7 @@ public class GrpcClientWorker implements GrpcClientService {
     }
 
     private int nextAddress(){
-        int localAddress = currentAddress;
-        if(localAddress+1<clusterAddresses.length){
-            localAddress+=1;
-        } else {
-            localAddress=0;
-        }
-        return localAddress;
+        return (currentAddress+1<clusterAddresses.length) ? currentAddress+1 : 0;
     }
 
     private void restart(){
@@ -75,11 +66,8 @@ public class GrpcClientWorker implements GrpcClientService {
         return !channel.isTerminated() && !channel.isShutdown();
     }
     private void stopChannel() {
-        try {
-            channel.shutdown().awaitTermination(50, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        channel.shutdownNow();
+        channel = null;
     }
 
     @Override
@@ -88,10 +76,8 @@ public class GrpcClientWorker implements GrpcClientService {
         try{
             response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sayHello(request);
         } catch (StatusRuntimeException e){
-            if (nextAddress() != initialAddress){
-                restart();
-                response = sendOverGrpc(request);
-            }
+            log.error("RPC failed because of " + e.getStatus().toString());
+            restart();
         }
         return response;
     }

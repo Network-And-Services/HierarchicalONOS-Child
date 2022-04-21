@@ -16,8 +16,6 @@
 package org.onosproject.hierarchicalsyncworker.converter;
 
 import com.google.protobuf.GeneratedMessageV3;
-
-import org.onlab.packet.ChassisId;
 import org.onosproject.event.Event;
 import org.onosproject.grpc.net.device.models.DeviceEnumsProto.DeviceEventTypeProto;
 import org.onosproject.grpc.net.device.models.DeviceEnumsProto.DeviceTypeProto;
@@ -76,7 +74,7 @@ public class DeviceEventConverter implements EventConverter {
                 DeviceProto.newBuilder()
                         .setChassisId(deviceEvent.subject().chassisId().id()
                                               .toString())
-                        .setDeviceId(deviceEvent.subject().id().toString())
+                        .setDeviceId(convertToVirtualDeviceID(deviceEvent.subject().id()))
                         .setHwVersion(deviceEvent.subject().hwVersion())
                         .setManufacturer(deviceEvent.subject().manufacturer())
                         .setSerialNumber(deviceEvent.subject().serialNumber())

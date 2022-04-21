@@ -16,6 +16,7 @@
 package org.onosproject.hierarchicalsyncworker.converter;
 
 import org.onosproject.event.Event;
+import org.onosproject.net.DeviceId;
 
 
 /**
@@ -33,4 +34,8 @@ public interface EventConverter {
      * @return converted data in protobuf format as a byte array.
      */
     byte[] convertToProtoMessage(Event<?, ?> event);
+
+    default String convertToVirtualDeviceID(DeviceId deviceId){
+        return "vr:"+deviceId.toString().split(":")[1];
+    }
 }

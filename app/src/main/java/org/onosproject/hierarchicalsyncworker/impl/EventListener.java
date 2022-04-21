@@ -27,7 +27,6 @@ import org.onosproject.net.link.LinkService;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 
@@ -63,13 +62,9 @@ public class EventListener {
     private final DeviceListener deviceListener = new InternalDeviceListener();
     private final LinkListener linkListener = new InternalLinkListener();
     private final LeadershipEventListener leadershipListener = new InternalLeadershipListener();
-
     protected ExecutorService eventExecutor;
-
     private static final String PUBLISHER_TOPIC = "WORK_QUEUE_PUBLISHER";
-
     private boolean topicLeader;
-
     private NodeId localNodeId;
 
     @Activate
@@ -114,7 +109,6 @@ public class EventListener {
     }
 
     private class InternalDeviceListener implements DeviceListener {
-
         @Override
         public void event(DeviceEvent event) {
 
@@ -128,6 +122,13 @@ public class EventListener {
                 return;
             }
 
+            if (event.type().equals(DeviceEvent.Type.DEVICE_AVAILABILITY_CHANGED)){
+                if (deviceService.isAvailable(event.subject().id())){
+                    event = new DeviceEvent(DeviceEvent.Type.DEVICE_ADDED, event.subject());
+                } else {
+                    event = new DeviceEvent(DeviceEvent.Type.DEVICE_REMOVED, event.subject());
+                }
+            }
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
@@ -138,10 +139,8 @@ public class EventListener {
     }
 
     private class InternalLinkListener implements LinkListener {
-
         @Override
         public void event(LinkEvent event) {
-
             if (!topicLeader) {
                 log.info("Not a Leader, cannot publish!");
                 return;
