@@ -102,13 +102,18 @@ public class GrpcStorageManager implements GrpcEventStorageService {
                     setType(onosEvent.type().toString()).
                     setRequest(ByteString.copyFrom(onosEvent.subject())).build());
             if(response == null){
+                log.warn("Event Type - {},  Sending once again the event over grpc",
+                        onosEvent.type());
+                sendEvent(onosEvent);
+                /*
                 queue.addOne(onosEvent);
                 log.error("Event Type - {},  Reinserting event",
                         onosEvent.type());
                 return;
+                */
             }
-            log.debug("Event Type - {}, Subject {} sent successfully.",
-                    onosEvent.type(), onosEvent.subject());
+            log.info("Event Type - {}, sent successfully.",
+                    onosEvent.type());
         }
     }
 

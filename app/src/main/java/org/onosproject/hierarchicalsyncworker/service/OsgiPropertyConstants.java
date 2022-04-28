@@ -26,6 +26,6 @@ public final class OsgiPropertyConstants {
     static final String MASTER_CLUSTER_ADDRESSES = "masterAddresses";
     //static final String[] MASTER_CLUSTER_ADDRESSES_DEFAULT = {"10.30.2.217:5908", "10.30.2.217:5909"};
 
-    static final String[] MASTER_CLUSTER_ADDRESSES_DEFAULT = {"172.168.7.6:5908", "172.168.7.7:5908"};
+    static final String[] MASTER_CLUSTER_ADDRESSES_DEFAULT = {"172.168.7.7:5908"};
 
 }
