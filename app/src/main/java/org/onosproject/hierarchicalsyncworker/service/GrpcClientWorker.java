@@ -9,7 +9,6 @@ import org.onosproject.hierarchicalsyncworker.proto.HierarchicalServiceGrpc;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 

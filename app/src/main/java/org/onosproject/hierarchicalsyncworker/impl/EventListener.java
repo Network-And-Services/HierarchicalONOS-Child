@@ -29,14 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
-
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static org.onlab.util.Tools.groupedThreads;
-
-
-/**
- * Encapsulates the behavior of monitoring various ONOS events.
- * */
 @Component(immediate = true)
 public class EventListener {
     private final Logger log = LoggerFactory.getLogger(getClass());

@@ -16,36 +16,12 @@
 package org.onosproject.hierarchicalsyncworker.api.dto;
 
 import org.onosproject.event.AbstractEvent;
-
-/**
- * Represents the converted Onos Event data into protobuf format.
- *
- */
-// FIXME lack of abstraction in subject type is biting us
 public class OnosEvent extends AbstractEvent<org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent.Type, byte[]> {
-
-    /**
-     * Creates a new Onos Event.
-     *
-     * @param type The Type of Onos Event
-     * @param subject Protobuf message corresponding to the Onos Event
-     */
     public OnosEvent(Type type, byte[] subject) {
         super(type, subject);
     }
-
-    /**
-     * List of Event Types supported.
-     */
     public enum Type {
-        /**
-         * Signifies Device events.
-         */
         DEVICE,
-
-        /**
-         * Signifies Link events.
-         */
         LINK,
     }
 }

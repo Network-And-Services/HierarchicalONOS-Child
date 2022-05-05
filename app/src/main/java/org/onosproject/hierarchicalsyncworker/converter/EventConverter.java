@@ -17,22 +17,7 @@ package org.onosproject.hierarchicalsyncworker.converter;
 
 import org.onosproject.event.Event;
 import org.onosproject.net.DeviceId;
-
-
-/**
- *
- * APIs for converting between ONOS event objects and protobuf data objects.
- *
- */
 public interface EventConverter {
-
-    /**
-     * Converts ONOS specific event data to a format that is suitable for export
-     * to Kafka.
-     *
-     * @param event ONOS Event object
-     * @return converted data in protobuf format as a byte array.
-     */
     byte[] convertToProtoMessage(Event<?, ?> event);
 
     default String convertToVirtualDeviceID(DeviceId deviceId){

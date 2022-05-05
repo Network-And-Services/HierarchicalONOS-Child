@@ -31,11 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent.Type.*;
-
-/**
- * Implementation of Event Conversion Service.
- *
- */
 @Component(immediate = true, service = EventConversionService.class)
 public class EventConversionManager implements EventConversionService {
 

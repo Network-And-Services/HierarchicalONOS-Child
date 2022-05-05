@@ -27,12 +27,7 @@ import org.onosproject.incubator.protobuf.models.net.AnnotationsTranslator;
 import org.onosproject.net.device.DeviceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-/**
- * Converts ONOS Device event message to protobuf format.
- */
 public class DeviceEventConverter implements EventConverter {
-
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
@@ -48,13 +43,6 @@ public class DeviceEventConverter implements EventConverter {
 
         return ((GeneratedMessageV3) buildDeviceProtoMessage(deviceEvent)).toByteArray();
     }
-
-    /**
-     * Checks if the ONOS Device Event type is supported.
-     *
-     * @param event ONOS Device event
-     * @return true if there is a match and false otherwise
-     */
     private boolean deviceEventTypeSupported(DeviceEvent event) {
         DeviceEventTypeProto[] deviceEvents = DeviceEventTypeProto.values();
         for (DeviceEventTypeProto deviceEventType : deviceEvents) {
@@ -104,13 +92,6 @@ public class DeviceEventConverter implements EventConverter {
 
         return notificationBuilder.build();
     }
-
-    /**
-     * Retrieves the protobuf generated device event type.
-     *
-     * @param event ONOS Device Event
-     * @return generated Device Event Type
-     */
     private DeviceEventTypeProto getProtoType(DeviceEvent event) {
         DeviceEventTypeProto protobufEventType = null;
         DeviceEventTypeProto[] deviceEvents = DeviceEventTypeProto.values();

@@ -16,17 +16,6 @@
 package org.onosproject.hierarchicalsyncworker.api;
 
 import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
-
-/**
- * APIs to insert and delete into a local store. This store is used to keep
- * track of events that are being published.
- */
 public interface GrpcEventStorageService {
-
-    /**
-     * Inserts the Onos Event into Distributed Work Queue.
-     *
-     * @param event the ONOS Event
-     */
     void publishEvent(OnosEvent event);
 }

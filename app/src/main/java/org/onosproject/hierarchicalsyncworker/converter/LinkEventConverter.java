@@ -26,10 +26,6 @@ import org.onosproject.grpc.net.models.LinkProtoOuterClass.LinkProto;
 import org.onosproject.net.link.LinkEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-/**
- * Converts for ONOS Link event message to protobuf format.
- */
 public class LinkEventConverter implements EventConverter {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -79,13 +75,6 @@ public class LinkEventConverter implements EventConverter {
         return notification;
     }
 
-    /**
-     * Returns the specific Kafka Device Event Type for the corresponding ONOS
-     * Device Event Type.
-     *
-     * @param event ONOS Device Event
-     * @return Kafka Device Event Type
-     */
     private LinkEventTypeProto getProtoType(LinkEvent event) {
         LinkEventTypeProto generatedEventType = null;
         LinkEventTypeProto[] kafkaEvents = LinkEventTypeProto.values();
