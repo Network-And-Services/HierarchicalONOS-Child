@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent.Type.*;
-@Component(immediate = true, service = EventConversionService.class)
+@Component(service = EventConversionService.class)
 public class EventConversionManager implements EventConversionService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -42,7 +42,7 @@ public class EventConversionManager implements EventConversionService {
     protected void activate() {
         deviceEventConverter = new DeviceEventConverter();
         linkEventConverter = new LinkEventConverter();
-        log.info("My app Started!");
+        log.info("Started!");
     }
 
     @Deactivate

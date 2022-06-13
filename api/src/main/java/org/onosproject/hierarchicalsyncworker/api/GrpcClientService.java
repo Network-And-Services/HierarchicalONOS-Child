@@ -19,7 +19,7 @@ import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 
 public interface GrpcClientService {
 
-    void start(String[] clusterAddresses);
+    void start();
     void stop();
     boolean isRunning();
     Hierarchical.Response sendOverGrpc(Hierarchical.Request request);

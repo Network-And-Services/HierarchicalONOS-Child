@@ -17,8 +17,8 @@ package org.onosproject.hierarchicalsyncworker.impl;
 
 import com.google.protobuf.ByteString;
 import org.onosproject.cluster.*;
+import org.onosproject.hierarchicalsyncworker.api.GrpcClientService;
 import org.onosproject.hierarchicalsyncworker.api.GrpcEventStorageService;
-import org.onosproject.hierarchicalsyncworker.api.GrpcPublisherService;
 import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 import org.onosproject.store.serializers.KryoNamespaces;
@@ -36,7 +36,6 @@ import static org.onlab.util.Tools.groupedThreads;
 
 @Component(service = GrpcEventStorageService.class)
 public class GrpcStorageManager implements GrpcEventStorageService {
-
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
     protected StorageService storageService;
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
@@ -44,9 +43,8 @@ public class GrpcStorageManager implements GrpcEventStorageService {
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
     protected ClusterService clusterService;
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
-    protected GrpcPublisherService grpcPublisherService;
+    protected GrpcClientService grpcClientService;
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     private final LeadershipEventListener leadershipListener = new InternalLeadershipListener();
     private static final String GRPC_WORK_QUEUE = "GRPC_WORK_QUEUE_WORKER";
     private final String contention = "PUBLISHER_WORKER";
@@ -86,6 +84,8 @@ public class GrpcStorageManager implements GrpcEventStorageService {
         }
         queue = null;
         leadershipService.withdraw(contention);
+        eventExecutor.shutdownNow();
+        eventExecutor = null;
         log.info("Stopped");
     }
 
@@ -97,7 +97,7 @@ public class GrpcStorageManager implements GrpcEventStorageService {
 
     private void sendEvent(OnosEvent onosEvent) {
         if (onosEvent != null) {
-            Hierarchical.Response response = grpcPublisherService.send(Hierarchical.Request.newBuilder().
+            Hierarchical.Response response = grpcClientService.sendOverGrpc(Hierarchical.Request.newBuilder().
                     setType(onosEvent.type().toString()).
                     setRequest(ByteString.copyFrom(onosEvent.subject())).build());
             if(response == null){
@@ -117,12 +117,12 @@ public class GrpcStorageManager implements GrpcEventStorageService {
                 boolean amItheLeader = Objects.equals(localNodeId,leadershipService.getLeader(contention));
                 if (amItheLeader != topicLeader){
                     topicLeader = amItheLeader;
+                    log.info("Leadership changed to: "+  amItheLeader);
                     if (topicLeader){
                         runTasker();
                     } else {
                         stopTasker();
                     }
-                    log.info("Leadership changed to: "+  amItheLeader);
                 }
             }
         }

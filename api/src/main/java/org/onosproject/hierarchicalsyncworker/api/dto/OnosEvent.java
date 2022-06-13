@@ -16,7 +16,7 @@
 package org.onosproject.hierarchicalsyncworker.api.dto;
 
 import org.onosproject.event.AbstractEvent;
-public class OnosEvent extends AbstractEvent<org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent.Type, byte[]> {
+public class OnosEvent extends AbstractEvent<OnosEvent.Type, byte[]> {
     public OnosEvent(Type type, byte[] subject) {
         super(type, subject);
     }
