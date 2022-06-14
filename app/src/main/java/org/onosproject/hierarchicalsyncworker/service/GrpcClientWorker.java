@@ -9,6 +9,8 @@ import org.onosproject.hierarchicalsyncworker.proto.HierarchicalServiceGrpc;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -70,6 +72,8 @@ public class GrpcClientWorker implements GrpcClientService {
     public Hierarchical.Response sendOverGrpc(Hierarchical.Request request){
         Hierarchical.Response response = null;
         try{
+            long now = Instant.now().toEpochMilli();
+            log.error("EVENT Sent: "+now);
             response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sayHello(request);
         } catch (StatusRuntimeException e){
             log.error("RPC failed because of " + e.getStatus().toString());

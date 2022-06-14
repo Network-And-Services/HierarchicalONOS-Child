@@ -27,6 +27,8 @@ import org.onosproject.net.link.LinkService;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
@@ -65,8 +67,6 @@ public class EventListener {
     protected void activate() {
 
         eventExecutor = newSingleThreadScheduledExecutor(groupedThreads("onos/onosEvents", "events-%d", log));
-        deviceService.addListener(deviceListener);
-        linkService.addListener(linkListener);
         leadershipService.addListener(leadershipListener);
 
         localNodeId = clusterService.getLocalNode().id();
@@ -78,13 +78,14 @@ public class EventListener {
 
     @Deactivate
     protected void deactivate() {
-        deviceService.removeListener(deviceListener);
-        linkService.removeListener(linkListener);
+        if (topicLeader){
+            deviceService.removeListener(deviceListener);
+            linkService.removeListener(linkListener);
+        }
         leadershipService.removeListener(leadershipListener);
         leadershipService.withdraw(PUBLISHER_TOPIC);
         eventExecutor.shutdownNow();
         eventExecutor = null;
-
         log.info("Stopped");
     }
 
@@ -96,6 +97,13 @@ public class EventListener {
                 boolean amItheLeader = Objects.equals(localNodeId,leadershipService.getLeader(PUBLISHER_TOPIC));
                 if (amItheLeader != topicLeader){
                     topicLeader = amItheLeader;
+                    if (topicLeader){
+                        deviceService.addListener(deviceListener);
+                        linkService.addListener(linkListener);
+                    } else {
+                        deviceService.removeListener(deviceListener);
+                        linkService.removeListener(linkListener);
+                    }
                     log.info("Leadership changed to: "+  amItheLeader);
                 }
             }
@@ -105,12 +113,6 @@ public class EventListener {
     private class InternalDeviceListener implements DeviceListener {
         @Override
         public void event(DeviceEvent event) {
-
-            if (!topicLeader) {
-                log.debug("Not a Leader, cannot publish!");
-                return;
-            }
-
             //TODO: Adjust this Temporal filter
             if (event.type().equals(DeviceEvent.Type.PORT_STATS_UPDATED)){
                 return;
@@ -123,6 +125,7 @@ public class EventListener {
                     event = new DeviceEvent(DeviceEvent.Type.DEVICE_REMOVED, event.subject());
                 }
             }
+            printTime();
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
@@ -135,10 +138,7 @@ public class EventListener {
     private class InternalLinkListener implements LinkListener {
         @Override
         public void event(LinkEvent event) {
-            if (!topicLeader) {
-                log.info("Not a Leader, cannot publish!");
-                return;
-            }
+            printTime();
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
@@ -146,6 +146,11 @@ public class EventListener {
             log.debug("Pushed event {} to grpc storage", onosEvent);
 
         }
+    }
+
+    public void printTime(){
+        long now = Instant.now().toEpochMilli();
+        log.error("EVENT Captured: "+now);
     }
 
 }
