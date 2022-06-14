@@ -27,6 +27,8 @@ import org.onosproject.net.link.LinkService;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
@@ -123,6 +125,7 @@ public class EventListener {
                     event = new DeviceEvent(DeviceEvent.Type.DEVICE_REMOVED, event.subject());
                 }
             }
+            printE2E();
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
@@ -139,6 +142,7 @@ public class EventListener {
                 log.info("Not a Leader, cannot publish!");
                 return;
             }
+            printE2E();
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(onosEvent);
@@ -146,6 +150,11 @@ public class EventListener {
             log.debug("Pushed event {} to grpc storage", onosEvent);
 
         }
+    }
+
+    public void printE2E(){
+        long now = Instant.now().toEpochMilli();
+        log.error("EVENT Captured: "+now);
     }
 
 }
