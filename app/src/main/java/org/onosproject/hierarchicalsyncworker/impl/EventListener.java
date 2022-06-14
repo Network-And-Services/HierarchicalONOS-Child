@@ -65,12 +65,8 @@ public class EventListener {
 
     @Activate
     protected void activate() {
-
         eventExecutor = newSingleThreadScheduledExecutor(groupedThreads("onos/onosEvents", "events-%d", log));
-        deviceService.addListener(deviceListener);
-        linkService.addListener(linkListener);
         leadershipService.addListener(leadershipListener);
-
         localNodeId = clusterService.getLocalNode().id();
         topicLeader = false;
         leadershipService.runForLeadership(PUBLISHER_TOPIC);
@@ -80,8 +76,10 @@ public class EventListener {
 
     @Deactivate
     protected void deactivate() {
-        deviceService.removeListener(deviceListener);
-        linkService.removeListener(linkListener);
+        if(topicLeader){
+            deviceService.removeListener(deviceListener);
+            linkService.removeListener(linkListener);
+        }
         leadershipService.removeListener(leadershipListener);
         leadershipService.withdraw(PUBLISHER_TOPIC);
         eventExecutor.shutdownNow();
@@ -98,6 +96,13 @@ public class EventListener {
                 boolean amItheLeader = Objects.equals(localNodeId,leadershipService.getLeader(PUBLISHER_TOPIC));
                 if (amItheLeader != topicLeader){
                     topicLeader = amItheLeader;
+                    if(topicLeader){
+                        deviceService.addListener(deviceListener);
+                        linkService.addListener(linkListener);
+                    } else {
+                        deviceService.removeListener(deviceListener);
+                        linkService.removeListener(linkListener);
+                    }
                     log.info("Leadership changed to: "+  amItheLeader);
                 }
             }
@@ -107,11 +112,6 @@ public class EventListener {
     private class InternalDeviceListener implements DeviceListener {
         @Override
         public void event(DeviceEvent event) {
-
-            if (!topicLeader) {
-                log.debug("Not a Leader, cannot publish!");
-                return;
-            }
 
             //TODO: Adjust this Temporal filter
             if (event.type().equals(DeviceEvent.Type.PORT_STATS_UPDATED)){
@@ -138,10 +138,6 @@ public class EventListener {
     private class InternalLinkListener implements LinkListener {
         @Override
         public void event(LinkEvent event) {
-            if (!topicLeader) {
-                log.info("Not a Leader, cannot publish!");
-                return;
-            }
             printE2E();
             OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
