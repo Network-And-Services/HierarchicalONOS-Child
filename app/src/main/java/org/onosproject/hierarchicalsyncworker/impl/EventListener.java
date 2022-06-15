@@ -27,7 +27,8 @@ import org.onosproject.net.link.LinkService;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -63,8 +64,18 @@ public class EventListener {
     private boolean topicLeader;
     private NodeId localNodeId;
 
+    private DatagramSocket serverSocket;
+    // Get the internet address of the specified host
+    private InetAddress address;
+
     @Activate
     protected void activate() {
+        try {
+            serverSocket = new DatagramSocket();
+            address = InetAddress.getByName("192.168.1.106");
+        } catch (Exception e){
+            log.error("Error while creating udp socket");
+        }
         eventExecutor = newSingleThreadScheduledExecutor(groupedThreads("onos/onosEvents", "events-%d", log));
         leadershipService.addListener(leadershipListener);
         localNodeId = clusterService.getLocalNode().id();
@@ -139,18 +150,18 @@ public class EventListener {
         @Override
         public void event(LinkEvent event) {
             printE2E();
-            OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
+                OnosEvent onosEvent = eventConversionService.convertEvent(event);
                 grpcEventStorageService.publishEvent(onosEvent);
             });
-            log.debug("Pushed event {} to grpc storage", onosEvent);
+            log.debug("Pushed event {} to grpc storage", event);
 
         }
     }
 
+
     public void printE2E(){
         long now = Instant.now().toEpochMilli();
-        log.error("EVENT Captured: "+now);
+        log.error("EVENTCAPTURED: "+now);
     }
-
 }

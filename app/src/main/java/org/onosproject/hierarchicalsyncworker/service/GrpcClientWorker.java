@@ -11,6 +11,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import static org.onosproject.hierarchicalsyncworker.service.OsgiPropertyConstants.MASTER_CLUSTER_ADDRESSES_DEFAULT;
@@ -69,6 +71,7 @@ public class GrpcClientWorker implements GrpcClientService {
     @Override
     public Hierarchical.Response sendOverGrpc(Hierarchical.Request request){
         Hierarchical.Response response = null;
+        printE2E();
         try{
             response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sayHello(request);
         } catch (StatusRuntimeException e){
@@ -76,5 +79,10 @@ public class GrpcClientWorker implements GrpcClientService {
             restart();
         }
         return response;
+    }
+
+    public void printE2E(){
+        long now = Instant.now().toEpochMilli();
+        log.error("EVENTSENT: "+now);
     }
 }
