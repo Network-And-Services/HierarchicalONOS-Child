@@ -72,13 +72,17 @@ public class GrpcClientWorker implements GrpcClientService {
     public Hierarchical.Response sendOverGrpc(Hierarchical.Request request){
         Hierarchical.Response response = null;
         try{
-            long now = Instant.now().toEpochMilli();
-            log.error("EVENT Sent: "+now);
+            printTime();
             response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sayHello(request);
         } catch (StatusRuntimeException e){
             log.error("RPC failed because of " + e.getStatus().toString());
             restart();
         }
         return response;
+    }
+
+    public void printTime(){
+        long now = Instant.now().toEpochMilli();
+        log.error("EVENTSENT: "+now);
     }
 }

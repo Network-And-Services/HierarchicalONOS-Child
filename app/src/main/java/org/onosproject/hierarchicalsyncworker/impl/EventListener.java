@@ -139,18 +139,18 @@ public class EventListener {
         @Override
         public void event(LinkEvent event) {
             printTime();
-            OnosEvent onosEvent = eventConversionService.convertEvent(event);
             eventExecutor.execute(() -> {
+                OnosEvent onosEvent = eventConversionService.convertEvent(event);
                 grpcEventStorageService.publishEvent(onosEvent);
             });
-            log.debug("Pushed event {} to grpc storage", onosEvent);
+            log.debug("Pushed event {} to grpc storage", event);
 
         }
     }
 
     public void printTime(){
         long now = Instant.now().toEpochMilli();
-        log.error("EVENT Captured: "+now);
+        log.error("EVENTCAPTURED: "+now);
     }
 
 }
