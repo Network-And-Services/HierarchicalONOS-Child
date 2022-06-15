@@ -97,13 +97,11 @@ public class GrpcStorageManager implements GrpcEventStorageService {
 
     private void sendEvent(OnosEvent onosEvent) {
         if (onosEvent != null) {
-            Hierarchical.Response response = grpcClientService.sendOverGrpc(Hierarchical.Request.newBuilder().
-                    setType(onosEvent.type().toString()).
-                    setRequest(ByteString.copyFrom(onosEvent.subject())).build());
-            if(response == null){
-                log.warn("Event Type - {},  Sending once again the event over grpc",
-                        onosEvent.type());
-                sendEvent(onosEvent);
+            Hierarchical.Response response = null;
+            while (response == null){
+                response = grpcClientService.sendOverGrpc(Hierarchical.Request.newBuilder().
+                        setType(onosEvent.type().toString()).
+                        setRequest(ByteString.copyFrom(onosEvent.subject())).build());
             }
             log.info("Event Type - {}, sent successfully.",
                     onosEvent.type());

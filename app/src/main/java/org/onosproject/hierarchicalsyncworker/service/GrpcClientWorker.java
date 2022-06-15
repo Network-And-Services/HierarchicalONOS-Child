@@ -49,14 +49,18 @@ public class GrpcClientWorker implements GrpcClientService {
     }
 
     private int nextAddress(){
-        return (currentAddress+1<MASTER_CLUSTER_ADDRESSES_DEFAULT.length) ? currentAddress+1 : 0;
+        return (currentAddress+1!=MASTER_CLUSTER_ADDRESSES_DEFAULT.length) ? currentAddress+1 : 0;
     }
 
     private void restart(){
         currentAddress = nextAddress();
         stopChannel();
         createBlockingStub();
-        log.info("Client gRPC is restarted");
+        try{
+            TimeUnit.MILLISECONDS.sleep(10);
+        } catch (Exception e){
+        }
+        log.warn("Client gRPC restarted. Selected address: "+MASTER_CLUSTER_ADDRESSES_DEFAULT[currentAddress]);
     }
 
     @Override
