@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import static org.onosproject.hierarchicalsyncworker.service.OsgiPropertyConstants.MASTER_CLUSTER_ADDRESSES_DEFAULT;
 
+
 @Component(service = {GrpcClientService.class})
 public class GrpcClientWorker implements GrpcClientService {
     private final Logger log = LoggerFactory.getLogger(getClass());

@@ -8,6 +8,7 @@ service HierarchicalService {
 message Request {
   string type = 1;
   bytes request = 2;
+  string clusterid = 3;
 }
 
 message Response {
