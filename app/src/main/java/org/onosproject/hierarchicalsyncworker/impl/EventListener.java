@@ -19,7 +19,9 @@ package org.onosproject.hierarchicalsyncworker.impl;
 import org.onosproject.cluster.*;
 import org.onosproject.hierarchicalsyncworker.api.EventConversionService;
 import org.onosproject.hierarchicalsyncworker.api.GrpcEventStorageService;
-import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
+import org.onosproject.net.Device;
+import org.onosproject.net.Link;
+import org.onosproject.net.Port;
 import org.onosproject.net.device.*;
 import org.onosproject.net.link.LinkEvent;
 import org.onosproject.net.link.LinkListener;
@@ -27,8 +29,6 @@ import org.onosproject.net.link.LinkService;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -64,24 +64,15 @@ public class EventListener {
     private boolean topicLeader;
     private NodeId localNodeId;
 
-    private DatagramSocket serverSocket;
-    // Get the internet address of the specified host
-    private InetAddress address;
-
+    private boolean initialsync;
     @Activate
     protected void activate() {
-        try {
-            serverSocket = new DatagramSocket();
-            address = InetAddress.getByName("192.168.1.106");
-        } catch (Exception e){
-            log.error("Error while creating udp socket");
-        }
+        initialsync = true;
         eventExecutor = newSingleThreadScheduledExecutor(groupedThreads("onos/onosEvents", "events-%d", log));
         leadershipService.addListener(leadershipListener);
         localNodeId = clusterService.getLocalNode().id();
         topicLeader = false;
         leadershipService.runForLeadership(PUBLISHER_TOPIC);
-
         log.info("Started");
     }
 
@@ -100,11 +91,14 @@ public class EventListener {
     }
 
     private class InternalLeadershipListener implements LeadershipEventListener {
-
         @Override
         public void event(LeadershipEvent event) {
             if(event.subject().topic().equals(PUBLISHER_TOPIC)){
                 boolean amItheLeader = Objects.equals(localNodeId,leadershipService.getLeader(PUBLISHER_TOPIC));
+                if (initialsync && amItheLeader){
+                    initialSync();
+                }
+                initialsync = false;
                 if (amItheLeader != topicLeader){
                     topicLeader = amItheLeader;
                     if(topicLeader){
@@ -117,6 +111,26 @@ public class EventListener {
                     log.info("Leadership changed to: "+  amItheLeader);
                 }
             }
+        }
+    }
+
+    private void initialSync(){
+        log.debug("STARTING INITIAL SYNC");
+        for (Device device : deviceService.getAvailableDevices()){
+            eventExecutor.execute(() -> {
+                grpcEventStorageService.publishEvent(
+                        eventConversionService.convertEvent(new DeviceEvent(DeviceEvent.Type.DEVICE_ADDED, device)));
+            });
+            for (Port port : deviceService.getPorts(device.id())) {
+                eventExecutor.execute(() -> {
+                    grpcEventStorageService.publishEvent(
+                            eventConversionService.convertEvent(new DeviceEvent(DeviceEvent.Type.PORT_ADDED, device, port)));
+                });
+            }
+        }
+        for (Link link : linkService.getLinks()){
+            eventExecutor.execute(() -> {grpcEventStorageService.publishEvent(
+                    eventConversionService.convertEvent(new LinkEvent(LinkEvent.Type.LINK_ADDED, link)));});
         }
     }
 
@@ -137,11 +151,11 @@ public class EventListener {
                 }
             }
             printE2E();
-            OnosEvent onosEvent = eventConversionService.convertEvent(event);
+            DeviceEvent finalEvent = event;
             eventExecutor.execute(() -> {
-                grpcEventStorageService.publishEvent(onosEvent);
+                grpcEventStorageService.publishEvent(eventConversionService.convertEvent(finalEvent));
             });
-            log.debug("Pushed event {} to grpc storage", onosEvent);
+            log.debug("Pushed event {} to grpc storage", event);
 
         }
     }
@@ -151,15 +165,12 @@ public class EventListener {
         public void event(LinkEvent event) {
             printE2E();
             eventExecutor.execute(() -> {
-                OnosEvent onosEvent = eventConversionService.convertEvent(event);
-                grpcEventStorageService.publishEvent(onosEvent);
+                grpcEventStorageService.publishEvent(eventConversionService.convertEvent(event));
             });
             log.debug("Pushed event {} to grpc storage", event);
 
         }
     }
-
-
     public void printE2E(){
         long now = Instant.now().toEpochMilli();
         log.error("EVENTCAPTURED: "+now);

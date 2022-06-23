@@ -27,5 +27,5 @@ public final class OsgiPropertyConstants {
     //static final String[] MASTER_CLUSTER_ADDRESSES_DEFAULT = {"172.30.0.207:5908", "172.30.0.208:5908", "172.30.0.209:5908"};
     static final String[] MASTER_CLUSTER_ADDRESSES_DEFAULT = {"172.168.7.14:5908"};
 
-    public static final String CLUSTER_NAME_DEFAULT = "Cluster-2";
+    public static final String CLUSTER_NAME_DEFAULT = "Cluster-1";
 }
