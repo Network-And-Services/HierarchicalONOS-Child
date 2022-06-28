@@ -27,6 +27,9 @@ import org.onosproject.incubator.protobuf.models.net.AnnotationsTranslator;
 import org.onosproject.net.device.DeviceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+
 public class DeviceEventConverter implements EventConverter {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -58,6 +61,8 @@ public class DeviceEventConverter implements EventConverter {
         DeviceNotificationProto.Builder notificationBuilder =
                 DeviceNotificationProto.newBuilder();
 
+        Map<String, String> annotations = AnnotationsTranslator.asMap(deviceEvent.subject().annotations());
+        annotations.put("originalId", deviceEvent.subject().id().toString());
         DeviceProto deviceCore =
                 DeviceProto.newBuilder()
                         .setChassisId(deviceEvent.subject().chassisId().id()
@@ -69,7 +74,7 @@ public class DeviceEventConverter implements EventConverter {
                         .setSwVersion(deviceEvent.subject().swVersion())
                         .setType(DeviceTypeProto
                                          .valueOf(deviceEvent.subject().type().name()))
-                        .putAllAnnotations(AnnotationsTranslator.asMap(deviceEvent.subject().annotations()))
+                        .putAllAnnotations(annotations)
                         .build();
 
         PortProtoOuterClass.PortProto portProto = null;
