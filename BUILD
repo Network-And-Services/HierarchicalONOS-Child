@@ -9,7 +9,7 @@ BUNDLES = [
 onos_app(
     category = "Integrations",
     included_bundles = BUNDLES,
-    title = "Hierarchical Sync Worker",
+    title = "Hierarchical Sync Child",
     required_apps = [
             "org.onosproject.protocols.grpc",
         ],

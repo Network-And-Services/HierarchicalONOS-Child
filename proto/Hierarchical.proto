@@ -9,6 +9,8 @@ message Request {
   string type = 1;
   bytes request = 2;
   string clusterid = 3;
+  int64 captured = 4;
+  int64 sent = 5;
 }
 
 message Response {

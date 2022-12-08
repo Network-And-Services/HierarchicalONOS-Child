@@ -38,6 +38,7 @@ import static org.onlab.util.Tools.groupedThreads;
 public class EventListener {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    public int eventCounter = 0;
     @Reference(cardinality = ReferenceCardinality.MANDATORY)
     protected EventConversionService eventConversionService;
 
@@ -119,18 +120,18 @@ public class EventListener {
         for (Device device : deviceService.getAvailableDevices()){
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(
-                        eventConversionService.convertEvent(new DeviceEvent(DeviceEvent.Type.DEVICE_ADDED, device)));
+                        eventConversionService.convertEvent(0, new DeviceEvent(DeviceEvent.Type.DEVICE_ADDED, device)));
             });
             for (Port port : deviceService.getPorts(device.id())) {
                 eventExecutor.execute(() -> {
                     grpcEventStorageService.publishEvent(
-                            eventConversionService.convertEvent(new DeviceEvent(DeviceEvent.Type.PORT_ADDED, device, port)));
+                            eventConversionService.convertEvent(0,new DeviceEvent(DeviceEvent.Type.PORT_ADDED, device, port)));
                 });
             }
         }
         for (Link link : linkService.getLinks()){
             eventExecutor.execute(() -> {grpcEventStorageService.publishEvent(
-                    eventConversionService.convertEvent(new LinkEvent(LinkEvent.Type.LINK_ADDED, link)));});
+                    eventConversionService.convertEvent(0, new LinkEvent(LinkEvent.Type.LINK_ADDED, link)));});
         }
     }
 
@@ -150,10 +151,9 @@ public class EventListener {
                     event = new DeviceEvent(DeviceEvent.Type.DEVICE_REMOVED, event.subject());
                 }
             }
-            printE2E();
             DeviceEvent finalEvent = event;
             eventExecutor.execute(() -> {
-                grpcEventStorageService.publishEvent(eventConversionService.convertEvent(finalEvent));
+                grpcEventStorageService.publishEvent(eventConversionService.convertEvent(Instant.now().toEpochMilli(),finalEvent));
             });
             log.debug("Pushed event {} to grpc storage", event);
 
@@ -163,16 +163,11 @@ public class EventListener {
     private class InternalLinkListener implements LinkListener {
         @Override
         public void event(LinkEvent event) {
-            printE2E();
             eventExecutor.execute(() -> {
-                grpcEventStorageService.publishEvent(eventConversionService.convertEvent(event));
+                grpcEventStorageService.publishEvent(eventConversionService.convertEvent(Instant.now().toEpochMilli(), event));
             });
             log.debug("Pushed event {} to grpc storage", event);
 
         }
-    }
-    public void printE2E(){
-        long now = Instant.now().toEpochMilli();
-        log.error("EVENTCAPTURED: "+now);
     }
 }

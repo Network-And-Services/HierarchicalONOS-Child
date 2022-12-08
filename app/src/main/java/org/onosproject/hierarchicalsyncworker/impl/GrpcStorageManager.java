@@ -28,6 +28,8 @@ import org.onosproject.store.service.WorkQueue;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import static org.onosproject.hierarchicalsyncworker.service.OsgiPropertyConstants.CLUSTER_NAME_DEFAULT;
@@ -102,6 +104,7 @@ public class GrpcStorageManager implements GrpcEventStorageService {
                 response = grpcClientService.sendOverGrpc(Hierarchical.Request.newBuilder().
                         setType(onosEvent.type().toString()).
                         setRequest(ByteString.copyFrom(onosEvent.subject())).
+                        setCaptured(onosEvent.timestamp).setSent(Instant.now().toEpochMilli()).
                         setClusterid(CLUSTER_NAME_DEFAULT).build());
             }
             log.info("Event Type - {}, sent successfully.",
