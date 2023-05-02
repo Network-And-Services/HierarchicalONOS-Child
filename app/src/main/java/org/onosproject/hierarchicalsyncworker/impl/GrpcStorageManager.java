@@ -48,7 +48,7 @@ public class GrpcStorageManager implements GrpcEventStorageService {
     protected GrpcClientService grpcClientService;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final LeadershipEventListener leadershipListener = new InternalLeadershipListener();
-    private static final String GRPC_WORK_QUEUE = "GRPC_WORK_QUEUE_WORKER";
+    public static final String GRPC_WORK_QUEUE = "GRPC_WORK_QUEUE_WORKER";
     private final String contention = "PUBLISHER_WORKER";
     private NodeId localNodeId;
     protected ExecutorService eventExecutor;
@@ -65,6 +65,14 @@ public class GrpcStorageManager implements GrpcEventStorageService {
                                                                         OnosEvent.class,
                                                                         OnosEvent.Type.class));
         leadershipService.runForLeadership(contention);
+
+        /*
+        TODO: Test
+        if (clusterService.getLocalNode().ip().toString().equals("172.16.7.5")){  //TODO: Remove this after you finished tests
+
+            leadershipService.runForLeadership(contention);
+        }
+         */
         log.info("Started");
     }
 
@@ -117,6 +125,7 @@ public class GrpcStorageManager implements GrpcEventStorageService {
         public void event(LeadershipEvent event) {
             if(event.subject().topic().equals(contention)){
                 boolean amItheLeader = Objects.equals(localNodeId,leadershipService.getLeader(contention));
+                //log.error("Publisher Leadership changed to: "+  amItheLeader);
                 if (amItheLeader != topicLeader){
                     topicLeader = amItheLeader;
                     log.info("Leadership changed to: "+  amItheLeader);
@@ -126,6 +135,14 @@ public class GrpcStorageManager implements GrpcEventStorageService {
                         stopTasker();
                     }
                 }
+                /*
+                TODO: Test
+                if (!amItheLeader && !clusterService.getLocalNode().ip().toString().equals("172.16.7.5")){ //TODO: Remove this after you finished tests
+                    leadershipService.runForLeadership(contention);
+                    //log.error("Not leader, but competing for Publisher");
+                }
+
+                 */
             }
         }
     }

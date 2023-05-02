@@ -61,19 +61,27 @@ public class EventListener {
     private final LinkListener linkListener = new InternalLinkListener();
     private final LeadershipEventListener leadershipListener = new InternalLeadershipListener();
     protected ExecutorService eventExecutor;
-    private static final String PUBLISHER_TOPIC = "WORK_QUEUE_PUBLISHER";
+    public static final String PUBLISHER_TOPIC = "WORK_QUEUE_PUBLISHER";
     private boolean topicLeader;
     private NodeId localNodeId;
 
     private boolean initialsync;
     @Activate
     protected void activate() {
-        initialsync = true;
+        initialsync = true; //TODO: Test  (false)
         eventExecutor = newSingleThreadScheduledExecutor(groupedThreads("onos/onosEvents", "events-%d", log));
         leadershipService.addListener(leadershipListener);
         localNodeId = clusterService.getLocalNode().id();
         topicLeader = false;
+
         leadershipService.runForLeadership(PUBLISHER_TOPIC);
+        /*
+         //TODO: Test
+         if (clusterService.getLocalNode().ip().toString().equals("172.16.7.4")){  //TODO: Remove this after you finished tests
+            leadershipService.runForLeadership(PUBLISHER_TOPIC);
+        }
+         */
+
         log.info("Started");
     }
 
@@ -99,6 +107,7 @@ public class EventListener {
                 if (initialsync && amItheLeader){
                     initialSync();
                 }
+                //log.error("Listener Leadership changed to: "+  amItheLeader);
                 initialsync = false;
                 if (amItheLeader != topicLeader){
                     topicLeader = amItheLeader;
@@ -111,6 +120,13 @@ public class EventListener {
                     }
                     log.info("Leadership changed to: "+  amItheLeader);
                 }
+                /*
+                //TODO: Test
+                if (!amItheLeader && !clusterService.getLocalNode().ip().toString().equals("172.16.7.4")){ //TODO: Remove this after you finished tests
+                    leadershipService.runForLeadership(PUBLISHER_TOPIC);
+                    //log.error("Not leader, but competing for Listener");
+                }
+                 */
             }
         }
     }
@@ -154,6 +170,7 @@ public class EventListener {
             DeviceEvent finalEvent = event;
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(eventConversionService.convertEvent(Instant.now().toEpochMilli(),finalEvent));
+                //grpcEventStorageService.publishEvent(eventConversionService.convertEvent(0,finalEvent));
             });
             log.debug("Pushed event {} to grpc storage", event);
 
@@ -165,6 +182,7 @@ public class EventListener {
         public void event(LinkEvent event) {
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(eventConversionService.convertEvent(Instant.now().toEpochMilli(), event));
+                //grpcEventStorageService.publishEvent(eventConversionService.convertEvent(0, event));
             });
             log.debug("Pushed event {} to grpc storage", event);
 

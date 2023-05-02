@@ -19,5 +19,5 @@ package org.onosproject.hierarchicalsyncworker.api;
 import org.onosproject.event.Event;
 import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
 public interface EventConversionService {
-    OnosEvent convertEvent(long id, Event<?, ?> event);
+    OnosEvent convertEvent(long timestamp, Event<?, ?> event);
 }

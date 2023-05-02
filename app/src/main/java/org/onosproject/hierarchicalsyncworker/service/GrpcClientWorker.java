@@ -38,7 +38,8 @@ public class GrpcClientWorker implements GrpcClientService {
     }
     @Activate
     public void start() {
-        currentAddress = new Random().nextInt(MASTER_CLUSTER_ADDRESSES_DEFAULT.length);
+        currentAddress = new Random().nextInt(MASTER_CLUSTER_ADDRESSES_DEFAULT.length); //TODO: remove after tests
+        ////TODO: Test currentAddress = 0;
         createBlockingStub();
         log.info("Client gRPC Started");
     }
@@ -77,7 +78,7 @@ public class GrpcClientWorker implements GrpcClientService {
     public Hierarchical.Response sendOverGrpc(Hierarchical.Request request){
         Hierarchical.Response response = null;
         try{
-            response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sayHello(request);
+            response = blockingStub.withDeadlineAfter(30, TimeUnit.MILLISECONDS).sayHello(request);
         } catch (StatusRuntimeException e){
             log.error("RPC failed because of " + e.getStatus().toString());
             restart();
