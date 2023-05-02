@@ -150,7 +150,6 @@ public class EventListener {
                     event = new DeviceEvent(DeviceEvent.Type.DEVICE_REMOVED, event.subject());
                 }
             }
-            printE2E();
             DeviceEvent finalEvent = event;
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(eventConversionService.convertEvent(finalEvent));
@@ -163,16 +162,11 @@ public class EventListener {
     private class InternalLinkListener implements LinkListener {
         @Override
         public void event(LinkEvent event) {
-            printE2E();
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(eventConversionService.convertEvent(event));
             });
             log.debug("Pushed event {} to grpc storage", event);
 
         }
-    }
-    public void printE2E(){
-        long now = Instant.now().toEpochMilli();
-        log.error("EVENTCAPTURED: "+now);
     }
 }
