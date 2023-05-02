@@ -15,10 +15,11 @@
  */
 package org.onosproject.hierarchicalsyncworker.converter;
 
+import com.google.protobuf.GeneratedMessageV3;
 import org.onosproject.event.Event;
 import org.onosproject.net.DeviceId;
 public interface EventConverter {
-    byte[] convertToProtoMessage(Event<?, ?> event);
+    GeneratedMessageV3 convertToProtoMessage(Event<?, ?> event);
 
     default String convertToVirtualDeviceID(DeviceId deviceId){
         return "vr:"+deviceId.toString().split(":")[1];

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package org.onosproject.hierarchicalsyncworker.api;
-
+import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 
 public interface GrpcClientService {
@@ -22,5 +22,5 @@ public interface GrpcClientService {
     void start();
     void stop();
     boolean isRunning();
-    Hierarchical.Response sendOverGrpc(Hierarchical.Request request);
+    Hierarchical.Response sendOverGrpc(OnosEvent request);
 }

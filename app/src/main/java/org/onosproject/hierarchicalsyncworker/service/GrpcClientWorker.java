@@ -1,9 +1,9 @@
 package org.onosproject.hierarchicalsyncworker.service;
-
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.NettyChannelBuilder;
 import org.onosproject.hierarchicalsyncworker.api.GrpcClientService;
+import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
 import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
 import org.onosproject.hierarchicalsyncworker.proto.HierarchicalServiceGrpc;
 import org.osgi.service.component.annotations.Activate;
@@ -11,8 +11,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.Instant;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import static org.onosproject.hierarchicalsyncworker.service.OsgiPropertyConstants.MASTER_CLUSTER_ADDRESSES_DEFAULT;
@@ -74,10 +72,15 @@ public class GrpcClientWorker implements GrpcClientService {
     }
 
     @Override
-    public Hierarchical.Response sendOverGrpc(Hierarchical.Request request){
+    public Hierarchical.Response sendOverGrpc(OnosEvent request){
         Hierarchical.Response response = null;
         try{
-            response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sayHello(request);
+            if (request.type().equals(OnosEvent.Type.DEVICE)) {
+                response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sendDeviceUpdate((Hierarchical.DeviceRequest) request.subject());
+            } else if (request.type().equals(OnosEvent.Type.LINK)) {
+                response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sendLinkUpdate((Hierarchical.LinkRequest) request.subject());
+            }
+
         } catch (StatusRuntimeException e){
             log.error("RPC failed because of " + e.getStatus().toString());
             restart();

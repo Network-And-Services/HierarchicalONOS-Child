@@ -23,6 +23,8 @@ import org.onosproject.grpc.net.device.models.DeviceEventProto.DeviceNotificatio
 import org.onosproject.grpc.net.device.models.PortEnumsProto;
 import org.onosproject.grpc.net.models.DeviceProtoOuterClass.DeviceProto;
 import org.onosproject.grpc.net.models.PortProtoOuterClass;
+import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
+import org.onosproject.hierarchicalsyncworker.service.OsgiPropertyConstants;
 import org.onosproject.incubator.protobuf.models.net.AnnotationsTranslator;
 import org.onosproject.net.device.DeviceEvent;
 import org.slf4j.Logger;
@@ -34,7 +36,7 @@ public class DeviceEventConverter implements EventConverter {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    public byte[] convertToProtoMessage(Event<?, ?> event) {
+    public GeneratedMessageV3 convertToProtoMessage(Event<?, ?> event) {
 
         DeviceEvent deviceEvent = (DeviceEvent) event;
 
@@ -44,7 +46,10 @@ public class DeviceEventConverter implements EventConverter {
             return null;
         }
 
-        return ((GeneratedMessageV3) buildDeviceProtoMessage(deviceEvent)).toByteArray();
+        DeviceNotificationProto deviceEventProto = buildDeviceProtoMessage(deviceEvent);
+
+        return Hierarchical.DeviceRequest.newBuilder().
+                setRequest(deviceEventProto).setClusterid(OsgiPropertyConstants.CLUSTER_NAME_DEFAULT).build();
     }
     private boolean deviceEventTypeSupported(DeviceEvent event) {
         DeviceEventTypeProto[] deviceEvents = DeviceEventTypeProto.values();

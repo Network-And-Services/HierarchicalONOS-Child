@@ -23,6 +23,8 @@ import org.onosproject.grpc.net.link.models.LinkEnumsProto.LinkTypeProto;
 import org.onosproject.grpc.net.link.models.LinkEventProto.LinkNotificationProto;
 import org.onosproject.grpc.net.models.ConnectPointProtoOuterClass.ConnectPointProto;
 import org.onosproject.grpc.net.models.LinkProtoOuterClass.LinkProto;
+import org.onosproject.hierarchicalsyncworker.proto.Hierarchical;
+import org.onosproject.hierarchicalsyncworker.service.OsgiPropertyConstants;
 import org.onosproject.net.link.LinkEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,7 @@ public class LinkEventConverter implements EventConverter {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    public byte[] convertToProtoMessage(Event<?, ?> event) {
+    public GeneratedMessageV3 convertToProtoMessage(Event<?, ?> event) {
 
         LinkEvent linkEvent = (LinkEvent) event;
 
@@ -40,8 +42,9 @@ public class LinkEventConverter implements EventConverter {
                               + "proto Event type", linkEvent.type().toString());
             return null;
         }
-
-        return ((GeneratedMessageV3) buildDeviceProtoMessage(linkEvent)).toByteArray();
+        LinkNotificationProto linkNotificationProto = buildDeviceProtoMessage(linkEvent);
+        return Hierarchical.LinkRequest.newBuilder().setRequest(linkNotificationProto).
+                setClusterid(OsgiPropertyConstants.CLUSTER_NAME_DEFAULT).build();
     }
 
     private boolean linkEventTypeSupported(LinkEvent event) {

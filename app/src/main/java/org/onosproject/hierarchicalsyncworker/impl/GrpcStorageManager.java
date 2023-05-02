@@ -17,6 +17,7 @@ package org.onosproject.hierarchicalsyncworker.impl;
 
 import com.google.protobuf.ByteString;
 import org.onosproject.cluster.*;
+import org.onosproject.grpc.net.device.models.DeviceEventProto;
 import org.onosproject.hierarchicalsyncworker.api.GrpcClientService;
 import org.onosproject.hierarchicalsyncworker.api.GrpcEventStorageService;
 import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
@@ -99,10 +100,7 @@ public class GrpcStorageManager implements GrpcEventStorageService {
         if (onosEvent != null) {
             Hierarchical.Response response = null;
             while (response == null){
-                response = grpcClientService.sendOverGrpc(Hierarchical.Request.newBuilder().
-                        setType(onosEvent.type().toString()).
-                        setRequest(ByteString.copyFrom(onosEvent.subject())).
-                        setClusterid(CLUSTER_NAME_DEFAULT).build());
+                response = grpcClientService.sendOverGrpc(onosEvent);
             }
             log.info("Event Type - {}, sent successfully.",
                     onosEvent.type());

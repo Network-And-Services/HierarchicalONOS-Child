@@ -15,9 +15,11 @@
  */
 package org.onosproject.hierarchicalsyncworker.api.dto;
 
+
+import com.google.protobuf.GeneratedMessageV3;
 import org.onosproject.event.AbstractEvent;
-public class OnosEvent extends AbstractEvent<OnosEvent.Type, byte[]> {
-    public OnosEvent(Type type, byte[] subject) {
+public class OnosEvent extends AbstractEvent<OnosEvent.Type, GeneratedMessageV3> {
+    public OnosEvent(Type type, GeneratedMessageV3 subject) {
         super(type, subject);
     }
     public enum Type {
