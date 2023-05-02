@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package org.onosproject.hierarchicalsyncworker.impl;
-
-import com.google.protobuf.ByteString;
 import org.onosproject.cluster.*;
-import org.onosproject.grpc.net.device.models.DeviceEventProto;
 import org.onosproject.hierarchicalsyncworker.api.GrpcClientService;
 import org.onosproject.hierarchicalsyncworker.api.GrpcEventStorageService;
 import org.onosproject.hierarchicalsyncworker.api.dto.OnosEvent;
@@ -31,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
-import static org.onosproject.hierarchicalsyncworker.service.OsgiPropertyConstants.CLUSTER_NAME_DEFAULT;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static org.onlab.util.Tools.groupedThreads;
 

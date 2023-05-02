@@ -29,7 +29,6 @@ import org.onosproject.net.link.LinkService;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
