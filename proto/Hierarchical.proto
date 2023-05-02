@@ -1,14 +1,22 @@
 syntax = "proto3";
 option java_package = "org.onosproject.hierarchicalsyncworker.proto";
 
+import "net/device/DeviceEventProto.proto";
+import "net/link/LinkEventProto.proto";
+
 service HierarchicalService {
-  rpc SayHello (Request) returns (Response);
+  rpc SendDeviceUpdate (DeviceRequest) returns (Response);
+  rpc SendLinkUpdate (LinkRequest) returns (Response);
 }
 
-message Request {
-  string type = 1;
-  bytes request = 2;
-  string clusterid = 3;
+message DeviceRequest {
+  net.device.DeviceNotificationProto request = 1;
+  string clusterid = 2;
+}
+
+message LinkRequest {
+  net.link.LinkNotificationProto request = 1;
+  string clusterid = 2;
 }
 
 message Response {
