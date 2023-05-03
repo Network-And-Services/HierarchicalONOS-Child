@@ -74,7 +74,6 @@ public class GrpcClientWorker implements GrpcClientService {
 
     @Override
     public Hierarchical.Response sendOverGrpc(OnosEvent request){
-        log.info("SI PROVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
         Hierarchical.Response response = null;
         try{
             if (request.type().equals(OnosEvent.Type.DEVICE)) {

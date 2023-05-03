@@ -153,7 +153,7 @@ public class EventListener {
             eventExecutor.execute(() -> {
                 grpcEventStorageService.publishEvent(eventConversionService.convertEvent(finalEvent));
             });
-            log.error("Pushed event {} to grpc storage", event);
+            log.debug("Pushed event {} to grpc storage", event);
 
         }
     }

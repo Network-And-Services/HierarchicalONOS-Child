@@ -90,17 +90,16 @@ public class GrpcStorageManager implements GrpcEventStorageService {
     @Override
     public void publishEvent(OnosEvent e) {
         queue.addOne(e);
-        log.error("Published {} Event to Distributed Work Queue", e.type());
+        log.debug("Published {} Event to Distributed Work Queue", e.type());
     }
 
     private void sendEvent(OnosEvent onosEvent) {
-        log.error("NEW EVENT");
         if (onosEvent != null) {
             Hierarchical.Response response = null;
             while (response == null){
                 response = grpcClientService.sendOverGrpc(onosEvent);
             }
-            log.info("Event Type - {}, sent successfully.",
+            log.debug("Event Type - {}, sent successfully.",
                     onosEvent.type());
         }
     }
