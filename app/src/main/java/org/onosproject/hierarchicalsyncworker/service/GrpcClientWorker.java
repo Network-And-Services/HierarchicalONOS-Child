@@ -1,4 +1,5 @@
 package org.onosproject.hierarchicalsyncworker.service;
+import com.google.protobuf.GeneratedMessageV3;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.NettyChannelBuilder;
@@ -73,17 +74,20 @@ public class GrpcClientWorker implements GrpcClientService {
 
     @Override
     public Hierarchical.Response sendOverGrpc(OnosEvent request){
+        log.info("SI PROVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
         Hierarchical.Response response = null;
         try{
             if (request.type().equals(OnosEvent.Type.DEVICE)) {
-                response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sendDeviceUpdate((Hierarchical.DeviceRequest) request.subject());
+                response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sendDeviceUpdate(Hierarchical.DeviceRequest.parseFrom(request.subject()));
             } else if (request.type().equals(OnosEvent.Type.LINK)) {
-                response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sendLinkUpdate((Hierarchical.LinkRequest) request.subject());
+                response = blockingStub.withDeadlineAfter(50, TimeUnit.MILLISECONDS).sendLinkUpdate(Hierarchical.LinkRequest.parseFrom(request.subject()));
             }
 
         } catch (StatusRuntimeException e){
             log.error("RPC failed because of " + e.getStatus().toString());
             restart();
+        } catch (Exception e){
+            log.error(e.toString());
         }
         return response;
     }

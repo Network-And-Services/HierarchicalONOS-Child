@@ -57,8 +57,9 @@ public class GrpcStorageManager implements GrpcEventStorageService {
         eventExecutor = newSingleThreadScheduledExecutor(groupedThreads("onos/onosEventsPublisher", "events-%d", log));
         queue = storageService.<OnosEvent>getWorkQueue(GRPC_WORK_QUEUE,
                                                        Serializer.using(KryoNamespaces.API,
-                                                                        OnosEvent.class,
-                                                                        OnosEvent.Type.class));
+                                                                        OnosEvent.Type.class,
+                                                                        OnosEvent.class
+                                                                        ));
         leadershipService.runForLeadership(contention);
         log.info("Started");
     }
@@ -89,10 +90,11 @@ public class GrpcStorageManager implements GrpcEventStorageService {
     @Override
     public void publishEvent(OnosEvent e) {
         queue.addOne(e);
-        log.debug("Published {} Event to Distributed Work Queue", e.type());
+        log.error("Published {} Event to Distributed Work Queue", e.type());
     }
 
     private void sendEvent(OnosEvent onosEvent) {
+        log.error("NEW EVENT");
         if (onosEvent != null) {
             Hierarchical.Response response = null;
             while (response == null){

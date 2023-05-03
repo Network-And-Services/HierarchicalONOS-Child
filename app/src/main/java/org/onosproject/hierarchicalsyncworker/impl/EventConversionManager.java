@@ -53,9 +53,9 @@ public class EventConversionManager implements EventConversionService {
     @Override
     public OnosEvent convertEvent(Event<?, ?> event) {
         if (event instanceof DeviceEvent) {
-            return new OnosEvent(DEVICE, deviceEventConverter.convertToProtoMessage(event));
+            return new OnosEvent(DEVICE, deviceEventConverter.convertToProtoMessage(event).toByteArray());
         } else if (event instanceof LinkEvent) {
-            return new OnosEvent(LINK, linkEventConverter.convertToProtoMessage(event));
+            return new OnosEvent(LINK, linkEventConverter.convertToProtoMessage(event).toByteArray());
         } else {
             throw new IllegalArgumentException("Unsupported event type");
         }
